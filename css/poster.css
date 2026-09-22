@@ -171,6 +171,45 @@
 .pk[aria-pressed="true"] .ph { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--s-ink); }
 .pk[aria-pressed="true"]::after { content: '✓'; position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%; background: var(--s-ink); color: #fff; font-size: .7rem; display: grid; place-items: center; }
 
+/* ---------- add someone new ---------- */
+.pk-add .ph { display: grid; place-items: center; border: 1px dashed #c9c3b8; background: #fff; color: var(--s-ink); }
+.pk-add:hover .ph { border-color: var(--s-ink); background: var(--s-soft); }
+.pk-wrap { position: relative; }
+.pk-wrap .pk { width: 100%; }
+.pk-edit { position: absolute; left: 6px; top: 6px; border: 0; border-radius: 4px; background: rgba(255, 255, 255, .92); color: var(--s-ink); font-size: .74rem; font-weight: 600; padding: 3px 7px; cursor: pointer; }
+.pk-edit:hover { background: #fff; }
+
+.person-dlg { border: 0; padding: 0; border-radius: 10px; width: min(760px, calc(100vw - 24px)); max-height: calc(100vh - 32px); background: #fff; color: var(--s-ink); box-shadow: 0 24px 70px rgba(0, 0, 0, .28); }
+.person-dlg::backdrop { background: rgba(20, 20, 20, .45); }
+.person-dlg[open] { animation: stepIn .2s ease; }
+.pd-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--s-line); }
+.pd-head h2 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 1.3rem; letter-spacing: -.01em; }
+.pd-body { display: grid; grid-template-columns: 220px 1fr; gap: 22px; padding: 22px; }
+.drop { position: relative; display: grid; place-items: center; aspect-ratio: 1; border: 1px dashed #c9c3b8; border-radius: 8px; background: var(--s-soft); cursor: pointer; overflow: hidden; text-align: center; transition: border-color .15s, background .15s; }
+.drop:hover, .drop.over { border-color: var(--s-ink); background: #efece5; }
+.drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.drop-empty { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px; color: var(--s-muted); pointer-events: none; }
+.drop-empty b { color: var(--s-ink); font-weight: 600; font-size: .95rem; }
+.drop-empty small { font-size: .8rem; }
+.drop-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.drop.has .drop-empty { visibility: hidden; }
+.drop.has::after { content: 'Change photo'; position: absolute; left: 8px; bottom: 8px; background: rgba(255, 255, 255, .92); border-radius: 4px; padding: 4px 8px; font-size: .78rem; font-weight: 600; pointer-events: none; }
+.drop-busy { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(255, 255, 255, .85); font-weight: 600; font-size: .9rem; }
+.drop-busy[hidden] { display: none; }
+.pd-fields .field textarea { min-height: 96px; }
+.pd-error { margin: 0; padding: 0 22px; min-height: 0; color: var(--red); font-size: .9rem; font-weight: 500; }
+.pd-error:not(:empty) { padding-bottom: 12px; }
+.pd-foot { display: flex; align-items: center; gap: 16px; padding: 14px 22px; border-top: 1px solid var(--s-line); }
+.pd-note { margin-left: auto; color: var(--s-muted); font-size: .85rem; }
+.linkish.danger { color: var(--red); }
+.pd-foot .btn:disabled { opacity: .5; cursor: progress; }
+@media (max-width: 640px) {
+  .pd-body { grid-template-columns: 1fr; }
+  .drop { width: 60%; justify-self: center; }
+  .pd-note { display: none; }
+  .pd-foot .btn { margin-left: auto; }
+}
+
 /* ---------- download ---------- */
 .download .seg { margin-bottom: 12px; }
 .formats { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--s-line); border-radius: 8px; overflow: hidden; }

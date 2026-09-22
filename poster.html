@@ -107,7 +107,7 @@
         <section class="step" data-step="2" hidden>
           <header class="step-head">
             <h1>Who’s telling stories?</h1>
-            <p>Two to four fit best. Edit the Hindi name, bio language or order for each.</p>
+            <p>Two to four fit best. Someone missing? Add them with their own photo and bio.</p>
           </header>
           <ol class="selected" id="selected"></ol>
           <div class="picker">
@@ -194,6 +194,41 @@
       <p class="stage-meta" id="stageMeta"></p>
     </section>
   </div>
+
+  <dialog class="person-dlg" id="personDlg" aria-labelledby="personTitle">
+    <form method="dialog" id="personForm" novalidate>
+      <header class="pd-head">
+        <h2 id="personTitle">Add someone new</h2>
+        <button class="icon-btn" type="button" data-close aria-label="Close"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      </header>
+      <div class="pd-body">
+        <label class="drop" id="drop">
+          <input type="file" id="pdFile" accept="image/*,.heic,.heif,.avif,.webp">
+          <span class="drop-empty">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 16V4m0 0-4.5 4.5M12 4l4.5 4.5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <b>Drop a photo or browse</b>
+            <small>JPG, PNG, HEIC, WebP… any size</small>
+          </span>
+          <img class="drop-img" id="pdImg" alt="" hidden>
+          <span class="drop-busy" id="pdBusy" hidden>Preparing photo…</span>
+        </label>
+        <div class="pd-fields">
+          <div class="row2">
+            <label class="field"><span>Name in English</span><input type="text" id="pdName" placeholder="e.g. Asha Verma" autocomplete="off"></label>
+            <label class="field"><span>Name in Hindi</span><input type="text" id="pdNameHi" lang="hi" placeholder="जैसे आशा वर्मा" autocomplete="off"></label>
+          </div>
+          <label class="field"><span>Bio in English <em>optional</em></span><textarea id="pdBioEn" rows="4" placeholder="A few lines about them. Leave a blank line between paragraphs."></textarea></label>
+          <label class="field"><span>Bio in Hindi <em>optional</em></span><textarea id="pdBioHi" rows="4" lang="hi" placeholder="उनके बारे में कुछ पंक्तियाँ।"></textarea></label>
+        </div>
+      </div>
+      <p class="pd-error" id="pdError" role="alert"></p>
+      <footer class="pd-foot">
+        <button class="linkish danger" type="button" id="pdDelete" hidden>Delete this person</button>
+        <span class="pd-note">Saved only in this browser.</span>
+        <button class="btn btn-green" type="submit" id="pdSave">Add to poster</button>
+      </footer>
+    </form>
+  </dialog>
 
   <script src="vendor/html-to-image.js"></script>
   <script src="vendor/jspdf.umd.min.js"></script>

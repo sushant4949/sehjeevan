@@ -37,9 +37,18 @@
 
   const langFor = (edition, p) => {
     const want = edition === 'english' ? 'en' : 'hi';
-    return p.bios[want] ? want : Object.keys(p.bios)[0];
+    return p.bios[want] ? want : Object.keys(p.bios)[0] || want;
   };
   const entry = (id, edition) => ({ id, lang: langFor(edition, byId[id]), photo: 0, custom: null, nameHi: null });
+
+  /* ---------- people added in this browser (never uploaded anywhere) ---------- */
+  const CUSTOM_KEY = 'sj.custom';
+  let custom = [];
+  try { custom = JSON.parse(localStorage.getItem(CUSTOM_KEY) || '[]') || []; } catch (e) { custom = []; }
+  custom.forEach((p) => { byId[p.id] = p; });
+  function saveCustom() {
+    try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom)); return true; } catch (e) { return false; }
+  }
 
   // saved draft (v2 only: older drafts had a different shape), then ?ids= from the directory
   const saved = store.get('sj.poster', null);
@@ -112,7 +121,7 @@
       const src = p.photos[x.photo] || p.photos[0];
       const paras = S.bioLen === 'none' && x.custom == null ? [] : bioParas(x);
       const hiName = (x.nameHi != null ? x.nameHi : p.nameHi || '').trim();
-      const showHi = S.showHi && hiName;
+      const showHi = S.showHi && hiName && hiName !== p.name;
       return `<article class="p-card">
         <div class="p-ph"><img src="${src}" alt="" style="${photoStyle(src)}"></div>
         <div>
@@ -312,8 +321,8 @@
             <input class="hi-input" data-hi type="text" lang="hi" value="${esc(hiName)}" placeholder="Hindi name" aria-label="Hindi name for ${esc(p.name)}">
           </div>
           <span class="seg mini" role="group" aria-label="Bio language">
-            <button type="button" data-lang="hi" aria-pressed="${x.lang === 'hi'}" title="Hindi bio${(p.translated || []).includes('hi') ? ' (translated)' : ''}">हिं</button>
-            <button type="button" data-lang="en" aria-pressed="${x.lang === 'en'}" title="English bio${(p.translated || []).includes('en') ? ' (translated)' : ''}">EN</button>
+            <button type="button" data-lang="hi" aria-pressed="${x.lang === 'hi'}" ${p.bios.hi ? `title="Hindi bio${(p.translated || []).includes('hi') ? ' (translated)' : ''}"` : 'disabled title="No Hindi bio"'}>हिं</button>
+            <button type="button" data-lang="en" aria-pressed="${x.lang === 'en'}" ${p.bios.en ? `title="English bio${(p.translated || []).includes('en') ? ' (translated)' : ''}"` : 'disabled title="No English bio"'}>EN</button>
           </span>
           <span class="tools">
             <button class="icon-btn ${editing === i ? 'on' : ''}" type="button" data-act="edit" aria-label="Edit bio" title="Edit bio">${ICON.edit}</button>
@@ -341,6 +350,7 @@
       [S.people[i], S.people[j]] = [S.people[j], S.people[i]];
       editing = null;
     } else if (act === 'remove') { S.people.splice(i, 1); editing = null; }
+    else if (act === 'edit' && x && byId[x.id].custom) { openPerson(x.id); return; }
     else if (act === 'edit') editing = editing === i ? null : i;
     else if (act === 'revert') { x.custom = null; editing = null; }
     else if (b.dataset.lang) { x.lang = b.dataset.lang; x.custom = null; }
@@ -364,18 +374,178 @@
       const inEd = list.filter((p) => p.editions.includes(S.edition));
       if (inEd.length) list = inEd;
     }
-    $('#pickerList').innerHTML = list.map((p) => `<button type="button" class="pk" data-id="${p.id}" aria-pressed="${on.has(p.id)}">
+    const mine = custom.filter((p) => matches(p, pq));
+    const tile = (p) => `<button type="button" class="pk" data-id="${p.id}" aria-pressed="${on.has(p.id)}">
       <span class="ph"><img src="${p.photos[0]}" alt="" loading="lazy" style="${photoStyle(p.photos[0])}"></span>
-      <b>${esc(p.name)}</b></button>`).join('') || '<p class="hint">Nobody matches that search.</p>';
+      <b>${esc(p.name)}</b></button>`;
+    $('#pickerList').innerHTML = `<button type="button" class="pk pk-add" data-add>
+        <span class="ph"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        <b>Add someone new</b></button>`
+      + mine.map((p) => `<div class="pk-wrap">${tile(p)}<button type="button" class="pk-edit" data-edit="${p.id}">Edit</button></div>`).join('')
+      + list.map(tile).join('');
   }
   $('#pq').addEventListener('input', (e) => { pq = e.target.value.trim(); renderPicker(); });
   $('#scopeSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.scope = b.dataset.scope; syncControls(); renderPicker(); save(); } });
   $('#pickerList').addEventListener('click', (e) => {
+    if (e.target.closest('[data-add]')) { openPerson(null); return; }
+    const ed = e.target.closest('[data-edit]');
+    if (ed) { openPerson(ed.dataset.edit); return; }
     const b = e.target.closest('.pk');
     if (!b) return;
     const i = S.people.findIndex((x) => x.id === b.dataset.id);
     if (i >= 0) S.people.splice(i, 1); else S.people.push(entry(b.dataset.id, S.edition));
     editing = null;
+    update();
+  });
+
+  /* ---------- add / edit someone new ---------- */
+  const pDlg = $('#personDlg');
+  let pId = null;      // id being edited, null when adding
+  let pPhoto = null;   // processed data URL
+  let photoJob = 0;    // bumps on every new file or reopen, so a slow decode can't land in the wrong form
+
+  function openPerson(id) {
+    const p = id ? byId[id] : null;
+    pId = id;
+    pPhoto = p ? p.photos[0] : null;
+    photoJob++;
+    setBusy(false);
+    $('#personTitle').textContent = p ? 'Edit person' : 'Add someone new';
+    $('#pdSave').textContent = p ? 'Save changes' : 'Add to poster';
+    $('#pdDelete').hidden = !p;
+    $('#pdName').value = p ? (p.name === p.nameHi ? '' : p.name) : '';
+    $('#pdNameHi').value = p ? p.nameHi || '' : '';
+    $('#pdBioEn').value = p && p.bios.en ? p.bios.en.join('\n\n') : '';
+    $('#pdBioHi').value = p && p.bios.hi ? p.bios.hi.join('\n\n') : '';
+    $('#pdError').textContent = '';
+    $('#pdFile').value = '';
+    showPhoto();
+    pDlg.showModal();
+    $('#pdName').focus();
+  }
+  function showPhoto() {
+    $('#pdImg').hidden = !pPhoto;
+    if (pPhoto) $('#pdImg').src = pPhoto;
+    $('#drop').classList.toggle('has', !!pPhoto);
+  }
+
+  function loadScript(src) {
+    return new Promise((res, rej) => {
+      if (document.querySelector(`script[src="${src}"]`)) return res();
+      const el = document.createElement('script');
+      el.src = src; el.onload = res; el.onerror = rej;
+      document.head.appendChild(el);
+    });
+  }
+  async function decode(blob) {
+    if ('createImageBitmap' in window) {
+      try { return await createImageBitmap(blob); } catch (e) { /* fall through to <img> */ }
+    }
+    const url = URL.createObjectURL(blob);
+    try {
+      return await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    } finally {
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+  }
+  // Any size, most formats: decode natively, convert HEIC/HEIF when the browser can't,
+  // then shrink to 900px so it fits in browser storage.
+  async function processPhoto(file) {
+    const heic = /hei[cf]/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
+    let img = null;
+    try { img = await decode(file); } catch (e) { img = null; }
+    if (!img && heic) {
+      await loadScript('vendor/heic2any.min.js');
+      const out = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 });
+      img = await decode(Array.isArray(out) ? out[0] : out);
+    }
+    if (!img) throw new Error('unreadable');
+    const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+    const k = Math.min(1, 900 / Math.max(w, h));
+    const c = document.createElement('canvas');
+    c.width = Math.round(w * k); c.height = Math.round(h * k);
+    const g = c.getContext('2d');
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(img, 0, 0, c.width, c.height);
+    if (img.close) img.close();
+    return c.toDataURL('image/jpeg', 0.86);
+  }
+  // Placeholder portrait with initials when no photo is given
+  function initialsPhoto(name) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 600;
+    const g = c.getContext('2d');
+    g.fillStyle = '#3f8f4e'; g.fillRect(0, 0, 600, 600);
+    const letters = name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+    g.fillStyle = '#fff'; g.font = '700 240px Inter, "Anek Devanagari", sans-serif';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(letters || '?', 300, 320);
+    return c.toDataURL('image/jpeg', 0.9);
+  }
+
+  function setBusy(on) {
+    $('#pdBusy').hidden = !on;
+    $('#pdSave').disabled = on;
+  }
+  async function takeFile(file) {
+    if (!file) return;
+    const job = ++photoJob;
+    $('#pdError').textContent = '';
+    setBusy(true);
+    try {
+      const url = await processPhoto(file);
+      if (job !== photoJob) return;
+      pPhoto = url;
+      showPhoto();
+    } catch (e) {
+      console.error(e);
+      if (job === photoJob) $('#pdError').textContent = 'That file couldn’t be read as a photo. Try a JPG, PNG or HEIC image.';
+    } finally {
+      if (job === photoJob) setBusy(false);
+    }
+  }
+  $('#pdFile').addEventListener('change', (e) => takeFile(e.target.files[0]));
+  const drop = $('#drop');
+  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.classList.remove('over')));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); takeFile(e.dataTransfer.files[0]); });
+  pDlg.addEventListener('click', (e) => { if (e.target === pDlg || e.target.closest('[data-close]')) pDlg.close(); });
+
+  const paras = (t) => t.split(/\n\s*\n/).map((x) => x.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  $('#personForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = $('#pdName').value.trim(), nameHi = $('#pdNameHi').value.trim();
+    if (!name && !nameHi) { $('#pdError').textContent = 'Add a name in English or Hindi.'; $('#pdName').focus(); return; }
+    const bios = {};
+    if (paras($('#pdBioEn').value).length) bios.en = paras($('#pdBioEn').value);
+    if (paras($('#pdBioHi').value).length) bios.hi = paras($('#pdBioHi').value);
+    const person = {
+      id: pId || `custom-${Date.now().toString(36)}`, custom: true,
+      name: name || nameHi, nameHi, bios, photos: [pPhoto || initialsPhoto(name || nameHi)], editions: [], sessions: [],
+    };
+    const prev = custom.slice();
+    const at = custom.findIndex((p) => p.id === person.id);
+    if (at >= 0) custom[at] = person; else custom.unshift(person);
+    if (!saveCustom()) {
+      custom = prev;
+      $('#pdError').textContent = 'This browser’s storage is full. Delete someone you added earlier, then try again.';
+      return;
+    }
+    byId[person.id] = person;
+    const inPoster = S.people.filter((x) => x.id === person.id);
+    if (!inPoster.length) S.people.push(entry(person.id, S.edition));
+    inPoster.forEach((x) => { x.nameHi = null; x.custom = null; if (!person.bios[x.lang]) x.lang = langFor(S.edition, person); });
+    editing = null;
+    pDlg.close();
+    update();
+  });
+  $('#pdDelete').addEventListener('click', () => {
+    if (!pId) return;
+    custom = custom.filter((p) => p.id !== pId);
+    saveCustom();
+    S.people = S.people.filter((x) => x.id !== pId);
+    delete byId[pId];
+    pDlg.close();
     update();
   });
 

@@ -4,7 +4,7 @@ A small static site for **Sehjeevan Foundation's** online storytelling circle.
 
 - **`index.html`**: home page with two rows of featured storytellers and a link to the [Sehjeevan YouTube channel](https://www.youtube.com/@Sehjeevan/videos) to listen to past sessions.
 - **`storytellers.html`**: every storyteller and poet from the poster archive, with search, edition filters (Hindi / English / Children / Poetry) and full bios in Hindi and English.
-- **`poster.html`** (Poster Studio): builds an A4 poster in four steps: edition (sets the colour theme), when & where (a registration link with QR code is optional), storytellers, and finishing touches. Download as **PNG, JPG or A4 PDF**, or print directly.
+- **`poster.html`** (Poster Studio): builds an A4 poster in four steps: edition (sets the colour theme), when & where (a registration link with QR code is optional), storytellers, and finishing touches. Download as **PNG, JPG or PDF** at the poster's exact size, or print. Someone not in the archive? **Add someone new** takes a photo (JPG, PNG, WebP, HEIC… any size, shrunk in the browser) with names and bios in English and/or Hindi; they're saved only in that browser.
 
 Everything runs in the browser. There is no build step and no server code.
 
@@ -34,5 +34,5 @@ css/     base.css (tokens, shared UI) · site.css (home + directory) · poster.c
 js/      common.js (data helpers) · site.js · poster.js (builder + export)
 data/    storytellers.js
 assets/  photos/ · img/ (logo, illustrations, textures) · fonts/ (Inter, League Spartan for all-caps titles, Anek Devanagari)
-vendor/  html-to-image, jsPDF, qrcode-generator
+vendor/  html-to-image, jsPDF, qrcode-generator, heic2any (loaded only for HEIC photos)
 ```
