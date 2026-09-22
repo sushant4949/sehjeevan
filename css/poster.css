@@ -112,6 +112,7 @@
 .ed:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1.5px var(--ink), 0 10px 24px rgba(0, 0, 0, .08); }
 .ed[aria-checked="true"] { box-shadow: 0 0 0 3px var(--green), 0 12px 28px rgba(63, 143, 78, .2); }
 .ed .sw { position: relative; height: 110px; display: flex; flex-direction: column; justify-content: flex-end; padding: 14px 16px; font-family: var(--display); font-weight: 800; text-transform: uppercase; }
+.ed .sw { box-shadow: inset 0 -1px 0 var(--line); }
 .ed .sw .a { font-size: 1rem; }
 .ed .sw .b { font-size: 1.9rem; line-height: .95; margin-top: 2px; }
 .ed .sw i { position: absolute; right: 14px; top: 14px; width: 22px; height: 22px; border-radius: 50%; }
@@ -171,83 +172,97 @@
 @keyframes flash { 0%, 100% { background: transparent; } 30% { background: var(--mint); } }
 
 /* =========================================================
-   The poster: 1080 × 1527 (A4 proportions), grows if needed.
-   One layout, four edition themes.
+   The poster: 1080 × 1527 (A4 proportions), grows with content.
+   Always a light paper background; editions differ in accent pieces
+   (date card, badge, photo rings, signature graphic). Green base band.
    ========================================================= */
 .poster {
-  --bg: #173b26; --ink: #f6f0e1; --muted: rgba(246, 240, 225, .82); --accent: #f4b942; --accent-2: #9fd39a;
-  --line: rgba(246, 240, 225, .16); --tile: #f6f0e1; --tile-ink: #173b26; --band: #c9403a; --band-ink: #fff; --ring: #f4b942;
-  --t1: var(--ink); --t2: var(--accent);
+  --bg: #f7f2e8; --ink: #1d3325; --muted: #4a574d; --t1: #9b2a2b; --t2: #3f8f4e;
+  --line: rgba(29, 51, 37, .13); --tile: #3f8f4e; --tile-ink: #fff; --badge: #9b2a2b; --badge-ink: #fff;
+  --ring: #3f8f4e; --leaf: #3f8f4e; --band: #1f5a35; --band-ink: #fff; --glow: rgba(244, 185, 66, .28);
   --bio: 19px;
   --head: 'League Spartan', 'Anek Devanagari', sans-serif;
   position: relative; overflow: hidden; width: 1080px; min-height: 1527px; display: flex; flex-direction: column;
   background: var(--bg); color: var(--ink); font-family: 'Anek Devanagari', 'League Spartan', sans-serif;
 }
 .poster * { box-sizing: border-box; }
-.poster.ed-english { --bg: #f7f2e8; --ink: #1d3325; --muted: #4a574d; --accent: #b7312c; --accent-2: #3f8f4e; --line: rgba(29, 51, 37, .14); --tile: #1d5a34; --tile-ink: #fff; --band: #1d5a34; --band-ink: #fff; --ring: #3f8f4e; --t1: #9b2a2b; --t2: #3f8f4e; }
-.poster.ed-english .p-name .hi, .poster.ed-children .p-name .hi { color: var(--t2); }
-.poster.ed-children { --bg: #ffefc2; --ink: #2b2a1f; --muted: #57533f; --accent: #e2522f; --accent-2: #2f8a4a; --line: rgba(43, 42, 31, .14); --tile: #2f8a4a; --tile-ink: #fff; --band: #e2522f; --band-ink: #fff; --ring: #2f8a4a; --t1: #b8322c; --t2: #2f8a4a; }
-.poster.ed-poetry { --bg: #4a1c22; --ink: #fbefe3; --muted: rgba(251, 239, 227, .82); --accent: #f2b84b; --accent-2: #f2a08f; --line: rgba(251, 239, 227, .16); --tile: #fbefe3; --tile-ink: #4a1c22; --band: #f2b84b; --band-ink: #3a1418; --ring: #f2b84b; }
+.poster.ed-english { --bg: #f5f3ee; --tile: #9b2a2b; --badge: #1f5a35; --ring: #9b2a2b; --leaf: #9b2a2b; }
+.poster.ed-children { --bg: #fbf3df; --tile: #e8913a; --badge: #3f8f4e; --ring: #e8913a; --leaf: #e8913a; --glow: rgba(232, 145, 58, .35); }
+.poster.ed-poetry { --bg: #f8efe9; --tile: #7a2224; --badge: #7a2224; --ring: #7a2224; --leaf: #7a2224; --glow: rgba(242, 160, 143, .3); }
 
-.p-grain { position: absolute; inset: 0; background: url('../assets/img/grain.png'); opacity: .55; pointer-events: none; }
-.p-leaves { position: absolute; top: -40px; right: -60px; width: 520px; height: 520px; color: var(--accent-2); opacity: .16; pointer-events: none; }
-.p-leaves.low { top: auto; right: auto; bottom: 240px; left: -140px; width: 380px; height: 380px; transform: rotate(160deg); opacity: .1; }
+.p-grain { position: absolute; inset: 0; background: url('../assets/img/grain.png'); opacity: .35; pointer-events: none; }
+.p-leaves { position: absolute; top: -30px; right: -70px; width: 500px; height: 500px; color: var(--leaf); opacity: .09; pointer-events: none; }
+.p-leaves.low { top: auto; right: auto; bottom: 260px; left: -150px; width: 360px; height: 360px; transform: rotate(160deg); opacity: .06; }
 .ed-poetry .p-leaves { display: none; }
-.p-quill { position: absolute; right: -30px; top: 130px; width: 360px; opacity: .14; pointer-events: none; transform: rotate(8deg); }
+.p-quill { position: absolute; right: -20px; top: 170px; width: 340px; opacity: .1; pointer-events: none; transform: rotate(8deg); }
+.p-dots { position: absolute; right: 60px; top: 330px; width: 140px; height: 140px; opacity: .22; pointer-events: none;
+  background-image: radial-gradient(circle, #e8913a 4px, transparent 5px); background-size: 28px 28px; }
 
-.p-main { position: relative; flex: 1; display: flex; flex-direction: column; padding: 48px 72px 0; }
-.p-top { display: flex; justify-content: space-between; align-items: center; min-height: 86px; }
-.p-logo { background: #fff; border-radius: 22px; padding: 12px 20px; box-shadow: 0 6px 18px rgba(0, 0, 0, .12); }
-.p-logo img { height: 74px; width: auto; display: block; }
-.p-session { font-family: var(--head); font-weight: 700; font-size: 22px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); border: 2px solid currentColor; border-radius: 999px; padding: 12px 22px 9px; }
+.p-main { position: relative; flex: 1; display: flex; flex-direction: column; padding: 44px 72px 0; }
+.p-side { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 28px; }
+.p-logo { width: 230px; height: auto; display: block; }
+.p-session { display: inline-block; font-family: var(--head); font-weight: 700; font-size: 20px; letter-spacing: .06em; text-transform: uppercase; color: var(--t1); border: 2px solid currentColor; border-radius: 999px; padding: 10px 18px 7px; margin-bottom: 18px; }
 
-.p-hero { display: grid; grid-template-columns: 1fr 250px; gap: 36px; align-items: end; margin-top: 36px; }
-.p-over { font-family: var(--head); font-weight: 600; font-size: 21px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 14px; }
+.p-hero { display: grid; grid-template-columns: 1fr 250px; gap: 36px; align-items: stretch; }
+.p-titles { align-self: end; }
+.p-over { font-family: 'Anek Devanagari', sans-serif; font-weight: 600; font-size: 25px; color: var(--t2); margin-bottom: 8px; }
 .p-t1 { font-family: var(--head); font-weight: 800; font-size: 72px; line-height: .95; letter-spacing: -.5px; white-space: nowrap; text-transform: uppercase; color: var(--t1); }
 .p-t2 { font-family: var(--head); font-weight: 800; font-size: 150px; line-height: .82; letter-spacing: -2px; color: var(--t2); white-space: nowrap; margin-top: 12px; text-transform: uppercase; }
-.p-edition { display: inline-flex; align-items: center; gap: 14px; margin-top: 30px; font-family: var(--head); font-weight: 700; font-size: 23px; letter-spacing: .14em; text-transform: uppercase; background: var(--ink); color: var(--bg); border-radius: 999px; padding: 14px 26px 10px; }
-.p-edition .hi { font-family: 'Anek Devanagari', sans-serif; letter-spacing: 0; text-transform: none; font-weight: 600; font-size: 23px; opacity: .85; margin-top: -3px; }
-.p-edition .hi::before { content: '·'; margin-right: 14px; opacity: .6; }
+.p-edition { display: inline-flex; align-items: center; gap: 12px; margin-top: 28px; font-family: var(--head); font-weight: 700; font-size: 22px; letter-spacing: .05em; text-transform: uppercase; background: var(--badge); color: var(--badge-ink); border-radius: 999px; padding: 13px 24px 9px; }
+.p-edition .hi { font-family: 'Anek Devanagari', sans-serif; letter-spacing: 0; text-transform: none; font-weight: 600; font-size: 23px; opacity: .9; margin-top: -3px; }
+.p-edition .hi::before { content: '·'; margin-right: 12px; opacity: .6; }
 
-.p-date { background: var(--tile); color: var(--tile-ink); border-radius: 32px; padding: 26px 18px 22px; text-align: center; transform: rotate(3deg); box-shadow: 0 18px 40px rgba(0, 0, 0, .22); font-family: var(--head); }
-.p-date .wd { font-weight: 700; font-size: 21px; letter-spacing: .2em; text-transform: uppercase; opacity: .8; }
+.p-date { background: var(--tile); color: var(--tile-ink); border-radius: 32px; padding: 26px 18px 22px; text-align: center; transform: rotate(3deg); box-shadow: 0 18px 40px rgba(29, 51, 37, .2); font-family: var(--head); }
+.p-date .wd { font-weight: 700; font-size: 22px; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
 .p-date .dd { font-weight: 800; font-size: 134px; line-height: .85; letter-spacing: -5px; margin: 14px 0 4px; }
-.p-date .my { font-weight: 700; font-size: 25px; letter-spacing: .1em; text-transform: uppercase; }
-.p-date .tm { font-weight: 700; font-size: 22px; margin-top: 14px; padding-top: 14px; border-top: 2px solid color-mix(in srgb, currentColor 25%, transparent); white-space: nowrap; }
-.p-date .tm small { display: block; font-size: 15px; letter-spacing: .16em; opacity: .7; margin-top: 3px; }
+.p-date .my { font-weight: 700; font-size: 25px; letter-spacing: .04em; text-transform: uppercase; }
+.p-date .tm { font-weight: 700; font-size: 22px; margin-top: 14px; padding-top: 14px; border-top: 2px solid rgba(255, 255, 255, .3); white-space: nowrap; }
+.p-date .tm small { display: block; font-size: 16px; letter-spacing: .06em; opacity: .75; margin-top: 3px; }
 .p-date.tba .dd { font-size: 64px; letter-spacing: -1px; padding: 18px 0; }
 
-.p-people { flex: 1; display: flex; flex-direction: column; justify-content: center; margin: 34px 0 30px; }
+.p-people { flex: 1; display: flex; flex-direction: column; justify-content: center; margin: 34px 0 60px; }
 .p-card { display: grid; grid-template-columns: 176px 1fr; gap: 34px; align-items: center; padding: 20px 0; border-top: 2px solid var(--line); }
 .p-card:last-child { border-bottom: 2px solid var(--line); }
-.p-people.names .p-card { grid-template-columns: 150px 1fr; padding: 20px 0; }
-.p-ph { position: relative; width: 100%; aspect-ratio: 1; border-radius: 46px; overflow: hidden; box-shadow: 0 0 0 5px var(--bg), 0 0 0 9px var(--ring); background: rgba(255, 255, 255, .2); }
+.p-people.names .p-card { grid-template-columns: 150px 1fr; padding: 18px 0; }
+.p-ph { position: relative; width: 100%; aspect-ratio: 1; border-radius: 46px; overflow: hidden; box-shadow: 0 0 0 5px var(--bg), 0 0 0 9px var(--ring); background: #e8e2d4; }
 .p-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .poster.circle .p-ph { border-radius: 50%; }
 .ed-children .p-card:nth-child(odd) .p-ph { transform: rotate(-3deg); }
-.ed-children .p-card:nth-child(even) .p-ph { transform: rotate(3deg); --ring: #e2522f; }
-.ed-children .p-card:nth-child(3n) .p-ph { --ring: #f2a91c; }
+.ed-children .p-card:nth-child(even) .p-ph { transform: rotate(3deg); --ring: #3f8f4e; }
+.ed-children .p-card:nth-child(3n) .p-ph { --ring: #9b2a2b; }
 .p-name { font-family: var(--head); font-weight: 700; font-size: 44px; line-height: 1; letter-spacing: -1px; color: var(--t1); }
-.p-name .hi { display: inline-block; font-family: 'Anek Devanagari', sans-serif; font-weight: 600; font-size: 27px; letter-spacing: 0; color: var(--accent); margin-left: 14px; }
+.p-name .hi { display: inline-block; font-family: 'Anek Devanagari', sans-serif; font-weight: 600; font-size: 27px; letter-spacing: 0; color: var(--t2); margin-left: 14px; }
 .p-bio { margin-top: 12px; font-size: var(--bio); line-height: 1.55; color: var(--muted); }
 .p-bio p { margin: 0 0 .6em; }
 .p-bio p:last-child { margin-bottom: 0; }
 .p-bio[lang="en"] { line-height: 1.48; }
-.p-empty { flex: 1; display: grid; place-items: center; text-align: center; color: var(--muted); font-family: var(--head); font-weight: 600; font-size: 32px; border: 3px dashed var(--line); border-radius: 30px; margin: 46px 0; }
+.p-empty { flex: 1; display: grid; place-items: center; text-align: center; color: var(--muted); font-family: var(--head); font-weight: 600; font-size: 32px; border: 3px dashed var(--line); border-radius: 30px; margin: 34px 0 60px; }
 
-.p-kids { display: block; width: 62%; height: auto; margin: -6px auto -4px; position: relative; }
+.p-kids { display: block; width: 58%; height: auto; margin: -40px auto 0; position: relative; z-index: 1; }
 
-.p-band { position: relative; background: var(--band); color: var(--band-ink); padding: 34px 72px 26px; }
-.p-band-row { display: flex; align-items: center; gap: 40px; }
-.p-facts { flex: 1; display: grid; grid-template-columns: repeat(2, auto); justify-content: start; gap: 18px 60px; }
-.p-fact small { display: block; font-family: var(--head); font-weight: 600; font-size: 16px; letter-spacing: .2em; text-transform: uppercase; opacity: .75; }
-.p-fact b { display: block; font-family: var(--head); font-weight: 700; font-size: 31px; line-height: 1.1; margin-top: 6px; letter-spacing: -.3px; }
-.p-note { font-family: 'Anek Devanagari', sans-serif; font-weight: 500; font-size: 21px; line-height: 1.4; margin-top: 22px; opacity: .92; max-width: 760px; }
-.p-link { display: inline-block; margin-top: 14px; font-family: var(--head); font-weight: 700; font-size: 24px; background: var(--band-ink); color: var(--band); border-radius: 999px; padding: 11px 20px 8px; word-break: break-all; }
-.p-qr { flex: none; text-align: center; }
-.p-qr .box { width: 156px; height: 156px; background: #fff; border-radius: 22px; padding: 14px; }
-.p-qr svg { width: 100%; height: 100%; display: block; }
-.p-qr small { display: block; font-family: var(--head); font-weight: 700; font-size: 15px; letter-spacing: .18em; text-transform: uppercase; margin-top: 10px; }
-.p-sign { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; padding-top: 16px; border-top: 1.5px solid color-mix(in srgb, currentColor 28%, transparent); font-family: var(--head); font-weight: 600; font-size: 16px; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+/* green base with a wavy top edge and a soft painted watermark */
+.p-band { position: relative; background: var(--band); color: var(--band-ink); padding: 26px 72px 26px; }
+.p-wave { position: absolute; left: 0; top: -44px; width: 100%; height: 46px; display: block; }
+.p-wave path { fill: var(--band); }
+.p-band-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  background:
+    radial-gradient(circle at 88% 18%, var(--glow), transparent 38%),
+    radial-gradient(circle at 4% 120%, rgba(155, 42, 43, .38), transparent 42%),
+    radial-gradient(circle at 55% 140%, rgba(120, 190, 120, .28), transparent 45%); }
+.p-band-art .lf { position: absolute; color: #6fae72; opacity: .22; }
+.p-band-art .lf.a { right: -60px; bottom: -120px; width: 360px; height: 360px; transform: rotate(-20deg); }
+.p-band-art .lf.b { right: 250px; top: -70px; width: 180px; height: 180px; transform: rotate(150deg); opacity: .12; }
+.p-band-art .lf.c { left: -70px; top: -40px; width: 200px; height: 200px; transform: rotate(40deg); opacity: .1; color: #f4b942; }
+.p-band-row { position: relative; display: flex; align-items: center; gap: 40px; }
+.p-facts { display: grid; grid-template-columns: repeat(2, auto); justify-content: start; gap: 18px 60px; }
+.p-fact small { display: block; font-family: 'Anek Devanagari', sans-serif; font-weight: 600; font-size: 18px; opacity: .78; }
+.p-fact b { display: block; font-family: var(--head); font-weight: 700; font-size: 31px; line-height: 1.1; margin-top: 2px; letter-spacing: -.3px; }
 .p-invite { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 22px; font-family: 'Anek Devanagari', sans-serif; font-weight: 500; font-size: 22px; }
 .p-invite b { font-family: var(--head); font-weight: 700; font-size: 24px; background: var(--band-ink); color: var(--band); border-radius: 999px; padding: 10px 20px 7px; }
+.p-note { font-family: 'Anek Devanagari', sans-serif; font-weight: 500; font-size: 21px; line-height: 1.4; margin-top: 16px; opacity: .92; max-width: 760px; }
+.p-link { display: inline-block; margin-top: 14px; font-family: var(--head); font-weight: 700; font-size: 22px; border: 2px solid rgba(255, 255, 255, .7); border-radius: 999px; padding: 9px 18px 6px; word-break: break-all; }
+.p-qr { flex: none; margin-left: auto; text-align: center; }
+.p-qr .box { width: 156px; height: 156px; background: #fff; border-radius: 22px; padding: 14px; }
+.p-qr svg { width: 100%; height: 100%; display: block; }
+.p-qr small { display: block; font-family: 'Anek Devanagari', sans-serif; font-weight: 600; font-size: 17px; margin-top: 8px; }
+.p-sign { position: relative; display: flex; justify-content: space-between; align-items: center; margin-top: 22px; padding-top: 14px; border-top: 1.5px solid rgba(255, 255, 255, .22); font-family: 'Anek Devanagari', sans-serif; font-weight: 500; font-size: 17px; opacity: .85; }

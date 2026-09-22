@@ -6,10 +6,10 @@
 
   /* ---------- edition themes (mirrors the .ed-* poster classes) ---------- */
   const THEME = {
-    hindi:    { bg: '#173b26', ink: '#f6f0e1', t1: '#f6f0e1', t2: '#f4b942', accent: '#f4b942', band: '#c9403a', hi: 'हिंदी संस्करण', desc: 'Bios in Hindi · forest green' },
-    english:  { bg: '#f7f2e8', ink: '#1d3325', t1: '#9b2a2b', t2: '#3f8f4e', accent: '#b7312c', band: '#1d5a34', hi: 'अंग्रेज़ी संस्करण', desc: 'Bios in English · warm ivory' },
-    children: { bg: '#ffefc2', ink: '#2b2a1f', t1: '#b8322c', t2: '#2f8a4a', accent: '#e2522f', band: '#2f8a4a', hi: 'बाल संस्करण', desc: 'Playful sunshine yellow' },
-    poetry:   { bg: '#4a1c22', ink: '#fbefe3', t1: '#fbefe3', t2: '#f2b84b', accent: '#f2b84b', band: '#f2b84b', hi: 'कविता संवाद', desc: 'Kavita Samvad · deep maroon' },
+    hindi:    { bg: '#f7f2e8', tile: '#3f8f4e', badge: '#9b2a2b', hi: 'हिंदी संस्करण', desc: 'Hindi bios · green date card, leaves' },
+    english:  { bg: '#f5f3ee', tile: '#9b2a2b', badge: '#1f5a35', hi: 'अंग्रेज़ी संस्करण', desc: 'English bios · red date card' },
+    children: { bg: '#fbf3df', tile: '#e8913a', badge: '#3f8f4e', hi: 'बाल संस्करण', desc: 'Warm cream · kids illustration' },
+    poetry:   { bg: '#f8efe9', tile: '#7a2224', badge: '#7a2224', hi: 'कविता संवाद', desc: 'Kavita Samvad · quill, maroon accents' },
   };
   const TITLES = {
     stories: { t1: 'The World of', t2: 'Stories' },
@@ -126,27 +126,30 @@
       <div class="p-leaves">${LEAVES}</div>
       <div class="p-leaves low">${LEAVES}</div>
       ${S.edition === 'poetry' ? '<img class="p-quill" src="assets/img/quill.png" alt="">' : ''}
+      ${S.edition === 'children' ? '<div class="p-dots"></div>' : ''}
       <div class="p-main">
-        <div class="p-top">
-          ${S.hasSession && S.session.trim() ? `<div class="p-session">${esc(S.session)}</div>` : '<span></span>'}
-          <div class="p-logo"><img src="assets/img/sehjeevan-logo.png" alt="Sehjeevan"></div>
-        </div>
         <div class="p-hero">
           <div class="p-titles">
+            ${S.hasSession && S.session.trim() ? `<div class="p-session">${esc(S.session)}</div>` : ''}
             <div class="p-over">Sehjeevan Foundation presents</div>
             <div class="p-t1">${esc(S.t1)}</div>
             <div class="p-t2">${esc(S.t2)}</div>
             <div class="p-edition">${esc(EDITIONS[S.edition].label)}<span class="hi">${esc(th.hi)}</span></div>
           </div>
+          <div class="p-side">
+          <img class="p-logo" src="assets/img/sehjeevan-logo.png" alt="Sehjeevan">
           <div class="p-date ${dt ? '' : 'tba'}">
             ${dt ? `<div class="wd">${esc(dt.wd)}</div><div class="dd">${dt.dd}</div><div class="my">${esc(dt.my)}</div>` : '<div class="dd">TBA</div>'}
             <div class="tm">${esc(timeLine())}${S.tz ? `<small>${esc(S.tz)}</small>` : ''}</div>
+          </div>
           </div>
         </div>
         ${cards ? `<section class="p-people ${S.bioLen === 'none' ? 'names' : ''}">${cards}</section>` : '<div class="p-empty">Storytellers appear here</div>'}
       </div>
       ${S.edition === 'children' ? '<img class="p-kids" src="assets/img/kids.png" alt="">' : ''}
       <footer class="p-band">
+        <svg class="p-wave" viewBox="0 0 1080 46" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46V28C160 4 330 -2 520 16s380 32 560 -6V46Z"/></svg>
+        <div class="p-band-art"><div class="lf a">${LEAVES}</div><div class="lf b">${LEAVES}</div><div class="lf c">${LEAVES}</div></div>
         <div class="p-band-row">
           <div>
             <div class="p-facts">
@@ -221,8 +224,8 @@
     const t = THEME[k];
     const title = k === 'poetry' ? TITLES.poetry : TITLES.stories;
     return `<button type="button" class="ed" role="radio" data-ed="${k}" aria-checked="false">
-      <span class="sw" style="background:${t.bg};color:${t.t1}"><i style="background:${t.band}"></i><i style="background:${t.accent}"></i>
-        <span class="a">${esc(title.t1)}</span><span class="b" style="color:${t.t2}">${esc(title.t2)}</span></span>
+      <span class="sw" style="background:${t.bg};color:#9b2a2b"><i style="background:${t.badge}"></i><i style="background:${t.tile}"></i>
+        <span class="a">${esc(title.t1)}</span><span class="b" style="color:#3f8f4e">${esc(title.t2)}</span></span>
       <span class="tx"><b>${v.label} <span class="hi">${t.hi}</span></b><small>${t.desc}</small></span>
     </button>`;
   }).join('');
