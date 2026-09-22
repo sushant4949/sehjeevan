@@ -31,7 +31,7 @@
     mode: 'ONLINE', venue: 'Google Meet', reg: 'Free registration',
     hasLink: false, link: '', qr: true, hasSession: false, session: '',
     t1: TITLES.stories.t1, t2: TITLES.stories.t2, bioLen: 'short', shape: 'rounded',
-    note: "We'd love to have you! Tell us you're coming and we'll send you the joining link.",
+    note: '',
     q: 2, scope: 'edition', people: [],
   });
 
@@ -45,6 +45,8 @@
   const saved = store.get('sj.poster', null);
   let S = Object.assign(DEFAULTS(), saved && saved.v === 2 ? saved : {});
   S.people = (S.people || []).filter((x) => byId[x.id]);
+  // the old default closing line duplicated the invite line that is now always on the poster
+  if (S.note === "We'd love to have you! Tell us you're coming and we'll send you the joining link.") S.note = '';
   const urlIds = (new URLSearchParams(location.search).get('ids') || '').split(',').filter((id) => byId[id]);
   if (urlIds.length) {
     S.people = urlIds.map((id) => S.people.find((x) => x.id === id) || entry(id, S.edition));
@@ -126,8 +128,8 @@
       ${S.edition === 'poetry' ? '<img class="p-quill" src="assets/img/quill.png" alt="">' : ''}
       <div class="p-main">
         <div class="p-top">
+          ${S.hasSession && S.session.trim() ? `<div class="p-session">${esc(S.session)}</div>` : '<span></span>'}
           <div class="p-logo"><img src="assets/img/sehjeevan-logo.png" alt="Sehjeevan"></div>
-          ${S.hasSession && S.session.trim() ? `<div class="p-session">${esc(S.session)}</div>` : ''}
         </div>
         <div class="p-hero">
           <div class="p-titles">
@@ -150,8 +152,8 @@
             <div class="p-facts">
               <div class="p-fact"><small>Where</small><b>${esc(whereLine())}</b></div>
               <div class="p-fact"><small>Entry</small><b>${esc(S.reg || 'Free')}</b></div>
-              <div class="p-fact"><small>Contact</small><b class="p-mail">sehjeevans@gmail.com</b></div>
             </div>
+            <div class="p-invite"><span>Interested? Write to us and we’ll send you an invite.</span><b>sehjeevans@gmail.com</b></div>
             ${S.note.trim() ? `<div class="p-note">${esc(S.note)}</div>` : ''}
             ${S.hasLink && S.link ? `<div class="p-link">${esc(S.link.replace(/^https?:\/\/(www\.)?/, ''))}</div>` : ''}
           </div>
@@ -420,9 +422,6 @@
     a.href = url; a.download = name;
     document.body.appendChild(a); a.click(); a.remove();
   }
-  function imgSize(url) {
-    return new Promise((r) => { const i = new Image(); i.onload = () => r([i.naturalWidth, i.naturalHeight]); i.src = url; });
-  }
 
   async function exportAs(fmt) {
     const status = $('#exportStatus');
@@ -434,16 +433,16 @@
       if (fmt === 'png' || fmt === 'jpg') {
         download(await render(fmt, S.q), `${fileBase()}.${fmt}`);
       } else if (fmt === 'pdf') {
+        // page is exactly the poster: 1080px wide at 96dpi, height follows the content
         const url = await render('jpg', Math.max(S.q, 2));
-        const [w, h] = await imgSize(url);
-        const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
-        const k = Math.min(210 / w, 297 / h), iw = w * k, ih = h * k;
-        pdf.addImage(url, 'JPEG', (210 - iw) / 2, (297 - ih) / 2, iw, ih);
+        const [pw, ph] = posterMM();
+        const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: [pw, ph], orientation: 'portrait' });
+        pdf.addImage(url, 'JPEG', 0, 0, pw, ph);
         pdf.save(`${fileBase()}.pdf`);
       } else if (fmt === 'print') {
         printImage(await render('png', Math.max(S.q, 2)));
       }
-      status.textContent = fmt === 'print' ? 'Opening print dialog…' : 'Done. Check your downloads.';
+      status.textContent = fmt === 'print' ? `Page size is set to the poster (${posterMM().map((v) => Math.round(v)).join(' × ')} mm), no margins.` : 'Done. Check your downloads.';
     } catch (err) {
       console.error(err);
       status.className = 'status err';
@@ -454,13 +453,20 @@
   }
   $('.formats').addEventListener('click', (e) => { const b = e.target.closest('.fmt'); if (b) exportAs(b.dataset.fmt); });
 
+  function posterMM() {
+    const mm = 25.4 / 96;
+    return [1080 * mm, poster.offsetHeight * mm];
+  }
+
+  // Browsers always show their print dialog; we set the page to the poster's exact size so nothing is scaled or padded.
   function printImage(url) {
+    const [pw, ph] = posterMM();
     const f = document.createElement('iframe');
     f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
     document.body.appendChild(f);
     const doc = f.contentDocument;
     doc.open();
-    doc.write(`<!doctype html><title>${esc(fileBase())}</title><style>@page{size:A4;margin:0}html,body{margin:0}img{display:block;width:100%;height:auto;max-height:297mm;object-fit:contain;margin:0 auto}</style><img src="${url}">`);
+    doc.write(`<!doctype html><title>${esc(fileBase())}</title><style>@page{size:${pw.toFixed(2)}mm ${ph.toFixed(2)}mm;margin:0}html,body{margin:0;padding:0}img{display:block;width:${pw.toFixed(2)}mm;height:${ph.toFixed(2)}mm}</style><img src="${url}">`);
     doc.close();
     const img = doc.querySelector('img');
     const go = () => { f.contentWindow.focus(); f.contentWindow.print(); setTimeout(() => f.remove(), 60000); };
