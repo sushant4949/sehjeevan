@@ -86,17 +86,20 @@
 .btn-yt:hover { box-shadow: inset 0 0 0 1.5px #ff0000, 0 6px 18px rgba(255, 0, 0, .12); }
 .nav-yt { display: inline-flex; align-items: center; gap: .45rem; }
 .yt-band {
-  display: flex; align-items: center; gap: clamp(16px, 3vw, 32px); text-decoration: none; color: #fff;
-  background: linear-gradient(120deg, #1d3325 0%, #173b26 60%, #2e6b3a 100%); border-radius: 28px; padding: clamp(22px, 4vw, 40px) clamp(22px, 4vw, 48px);
+  display: block; overflow: hidden; text-decoration: none; color: #fff; background: #173b26; border-radius: 28px;
   box-shadow: 0 20px 50px rgba(23, 59, 38, .25); transition: transform .3s cubic-bezier(.2, .7, .3, 1);
 }
 .yt-band:hover { transform: translateY(-3px); }
-.yt-big { width: clamp(64px, 9vw, 96px); flex: none; filter: drop-shadow(0 8px 20px rgba(255, 0, 0, .35)); }
+.yt-photo { width: 100%; aspect-ratio: 2000 / 330; object-fit: cover; transition: scale .8s cubic-bezier(.2, .7, .3, 1); }
+.yt-band:hover .yt-photo { scale: 1.02; }
+.yt-row { position: relative; display: flex; align-items: center; gap: clamp(16px, 3vw, 32px); padding: clamp(20px, 3vw, 32px) clamp(22px, 4vw, 48px);
+  background: radial-gradient(circle at 92% 0%, rgba(244, 185, 66, .22), transparent 40%), linear-gradient(120deg, #1d3325 0%, #173b26 60%, #2e6b3a 100%); }
+.yt-big { width: clamp(56px, 7vw, 80px); flex: none; filter: drop-shadow(0 8px 20px rgba(255, 0, 0, .35)); }
 .yt-copy { flex: 1; }
 .yt-copy b { display: block; font-family: var(--display); font-weight: 700; font-size: clamp(1.4rem, 2.6vw, 2.1rem); letter-spacing: -.02em; line-height: 1.1; }
 .yt-copy span { display: block; opacity: .8; margin-top: .4rem; font-size: 1.05rem; }
 .yt-go { flex: none; font-family: var(--sans); font-weight: 700; background: #fff; color: var(--ink); border-radius: 999px; padding: .8em 1.3em .65em; }
-@media (max-width: 640px) { .yt-band { flex-wrap: wrap; } .yt-go { width: 100%; text-align: center; } }
+@media (max-width: 640px) { .yt-photo { aspect-ratio: 16 / 7; object-position: 30% 50%; } .yt-row { flex-wrap: wrap; } .yt-go { width: 100%; text-align: center; } }
 
 /* ---------- Page bits ---------- */
 .section-head.split { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.6rem; }
