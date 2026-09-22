@@ -1,16 +1,23 @@
 (function () {
   const { D, EDITIONS, byId, photoStyle, esc, bio, matches, store } = window.SJ;
   const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
   const poster = $('#poster');
 
-  const EDITION_DESC = {
-    hindi: 'Stories told in Hindi',
-    english: 'Stories told in English',
-    children: 'Stories for young listeners',
-    poetry: 'Kavita Samvad · poems',
+  /* ---------- edition themes (mirrors the .ed-* poster classes) ---------- */
+  const THEME = {
+    hindi:    { bg: '#173b26', ink: '#f6f0e1', accent: '#f4b942', band: '#c9403a', hi: 'हिंदी संस्करण', desc: 'Bios in Hindi · forest green' },
+    english:  { bg: '#f7f2e8', ink: '#1d3325', accent: '#b7312c', band: '#1d5a34', hi: 'अंग्रेज़ी संस्करण', desc: 'Bios in English · warm ivory' },
+    children: { bg: '#ffefc2', ink: '#2b2a1f', accent: '#e2522f', band: '#2f8a4a', hi: 'बाल संस्करण', desc: 'Playful sunshine yellow' },
+    poetry:   { bg: '#4a1c22', ink: '#fbefe3', accent: '#f2b84b', band: '#f2b84b', hi: 'कविता संवाद', desc: 'Kavita Samvad · deep maroon' },
   };
-  const DEFAULT_TITLE = { t1: 'THE WORLD OF', t2: 'STORIES' };
-  const POETRY_TITLE = { t1: 'KAVITA', t2: 'SAMVAD' };
+  const TITLES = {
+    stories: { t1: 'The World of', t2: 'Stories' },
+    poetry:  { t1: 'The World of', t2: 'Poetry' },
+  };
+  const STEPS = ['Edition', 'When & where', 'Storytellers', 'Finish'];
+  const VENUES = { ONLINE: ['Google Meet', 'Zoom', 'YouTube Live'], 'IN PERSON': [], HYBRID: ['Google Meet', 'Zoom'] };
+  const REGS = ['Free registration', 'All are welcome', 'Free entry'];
 
   function nextSunday() {
     const d = new Date();
@@ -19,10 +26,13 @@
   }
 
   const DEFAULTS = () => ({
-    edition: 'hindi', date: nextSunday(), day: '', start: '16:30', end: '18:00', tz: 'IST',
-    mode: 'ONLINE', venue: 'Google Meet', reg: 'Free Registration', link: '', qr: true, invite: '',
-    note: "We'd love to have you at our storytelling session. Register and we'll send you the Google Meet link.",
-    t1: DEFAULT_TITLE.t1, t2: DEFAULT_TITLE.t2, shape: 'square', layout: 'zigzag', size: 100, people: [],
+    v: 2, step: 0, edition: 'hindi',
+    date: nextSunday(), day: '', start: '16:30', end: '18:00', tz: 'IST',
+    mode: 'ONLINE', venue: 'Google Meet', reg: 'Free registration',
+    hasLink: false, link: '', qr: true, hasSession: false, session: '',
+    t1: TITLES.stories.t1, t2: TITLES.stories.t2, bioLen: 'short', shape: 'rounded',
+    note: "We'd love to have you! Tell us you're coming and we'll send you the joining link.",
+    q: 2, scope: 'edition', people: [],
   });
 
   const langFor = (edition, p) => {
@@ -31,30 +41,27 @@
   };
   const entry = (id, edition) => ({ id, lang: langFor(edition, byId[id]), photo: 0, custom: null });
 
-  // ---- initial state: saved draft, then ?ids= from the directory overrides the people ----
-  let S = Object.assign(DEFAULTS(), store.get('sj.poster', {}));
+  // saved draft (v2 only: older drafts had a different shape), then ?ids= from the directory
+  const saved = store.get('sj.poster', null);
+  let S = Object.assign(DEFAULTS(), saved && saved.v === 2 ? saved : {});
   S.people = (S.people || []).filter((x) => byId[x.id]);
   const urlIds = (new URLSearchParams(location.search).get('ids') || '').split(',').filter((id) => byId[id]);
   if (urlIds.length) {
     S.people = urlIds.map((id) => S.people.find((x) => x.id === id) || entry(id, S.edition));
     history.replaceState(null, '', location.pathname);
   }
-  if (!S.people.length && !store.get('sj.poster', null)) {
-    S.people = ['arpna-chandail', 'ganesh-madulkar', 'noopur-mathur'].map((id) => entry(id, S.edition));
-  }
+  let editing = null; // index of the storyteller whose bio is open for editing
 
   /* ---------- formatting ---------- */
-  function ordinal(n) {
-    const s = n % 100 >= 11 && n % 100 <= 13 ? 'TH' : ({ 1: 'ST', 2: 'ND', 3: 'RD' }[n % 10] || 'TH');
-    return String(n).padStart(2, '0') + s;
-  }
-  function dateParts() {
-    if (!S.date) return ['DATE TBA', S.day || ''];
+  function dateBits() {
+    if (!S.date) return null;
     const [y, m, d] = S.date.split('-').map(Number);
     const dt = new Date(y, m - 1, d);
-    const month = dt.toLocaleDateString('en-GB', { month: 'long' }).toUpperCase();
-    const day = S.day.trim() || dt.toLocaleDateString('en-GB', { weekday: 'long' });
-    return [`${ordinal(d)} ${month}`, day.toUpperCase()];
+    return {
+      wd: (S.day.trim() || dt.toLocaleDateString('en-GB', { weekday: 'long' })),
+      dd: String(d).padStart(2, '0'),
+      my: `${dt.toLocaleDateString('en-GB', { month: 'short' })} ${y}`,
+    };
   }
   function clock(t) {
     if (!t) return null;
@@ -63,156 +70,226 @@
   }
   function timeLine() {
     const a = clock(S.start), b = clock(S.end);
-    if (!a) return 'TIME TBA';
+    if (!a) return 'Time TBA';
     if (!b) return `${a.txt} ${a.ap}`;
-    return a.ap === b.ap ? `${a.txt} TO ${b.txt} ${b.ap}` : `${a.txt} ${a.ap} TO ${b.txt} ${b.ap}`;
+    return a.ap === b.ap ? `${a.txt} – ${b.txt} ${b.ap}` : `${a.txt} ${a.ap} – ${b.txt} ${b.ap}`;
   }
-  function twoLines(text) {
-    const w = text.trim().toUpperCase().split(/\s+/);
-    return w.length < 2 ? [w[0] || '', ''] : [w[0], w.slice(1).join(' ')];
+  function whereLine() {
+    const v = S.venue.trim();
+    if (S.mode === 'ONLINE') return v ? `Online · ${v}` : 'Online';
+    if (S.mode === 'HYBRID') return v ? `Hybrid · ${v}` : 'Hybrid';
+    return v || 'Venue TBA';
+  }
+  function bioParas(x) {
+    const p = byId[x.id];
+    if (x.custom != null) return x.custom.split(/\n\s*\n/).map((t) => t.trim()).filter(Boolean);
+    const all = bio(p, x.lang);
+    if (S.bioLen === 'full') return all;
+    // short: first paragraph, plus the next one if the first is only a line
+    return all[0] && all[0].length < 140 && all[1] ? all.slice(0, 2) : all.slice(0, 1);
   }
 
-  // "THE WORLD OF" sits on two lines like the original posters: first word, then the rest.
-  function titleLines(t) {
-    const w = t.trim().split(/\s+/);
-    return w.length >= 3 ? [w[0], w.slice(1).join(' ')] : [t.trim()];
-  }
+  const LEAVES = `<svg viewBox="0 0 200 200" fill="currentColor" aria-hidden="true">
+    <path d="M100 190C60 150 40 100 70 40c40 30 60 90 30 150Z"/>
+    <path d="M104 186c10-50 40-86 88-96-6 50-40 86-88 96Z"/><path d="M96 186C80 140 44 116 4 116c14 42 50 66 92 70Z"/></svg>`;
 
-  /* ---------- poster render ---------- */
+  /* ---------- poster ---------- */
   function renderPoster() {
-    const [dLine, dayLine] = dateParts();
-    const [r1, r2] = twoLines(S.reg);
-    const ed = EDITIONS[S.edition].label.toUpperCase().split(' ');
-    const art = S.edition === 'poetry' ? 'assets/img/quill.png' : 'assets/img/reader.png';
+    const th = THEME[S.edition];
+    const dt = dateBits();
+    const people = S.people;
     let qr = '';
-    if (S.link && S.qr && window.qrcode) {
+    if (S.hasLink && S.link && S.qr && window.qrcode) {
       try { const q = qrcode(0, 'M'); q.addData(S.link); q.make(); qr = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); } catch (e) { qr = ''; }
     }
-    poster.className = `poster ${S.shape === 'circle' ? 'circle' : ''}`;
-    poster.style.setProperty('--bio', `${Math.round((18 * S.size) / 100)}px`); // whole px: html-to-image floors sizes
+    poster.className = `poster ed-${S.edition} ${S.shape === 'circle' ? 'circle' : ''}`;
+    poster.style.setProperty('--bio', `${people.length >= 4 ? 17 : people.length <= 2 ? 21 : 19}px`); // whole px: html-to-image floors sizes
 
-    const rows = S.people.map((x, i) => {
+    const cards = people.map((x) => {
       const p = byId[x.id];
       const src = p.photos[x.photo] || p.photos[0];
-      const paras = x.custom != null ? x.custom.split(/\n\s*\n/).map((t) => t.trim()).filter(Boolean) : bio(p, x.lang);
-      const flip = S.layout === 'zigzag' && i % 2 === 1;
-      const showHi = x.lang === 'hi' && p.nameHi;
-      return `<div class="p-row ${flip ? 'flip' : ''}">
-        <div class="p-person">
-          <div class="p-frame"><img src="${src}" alt="" style="${photoStyle(src)}"></div>
-          <div class="p-name">${esc(p.name.replace(/^Dr\.\s*/, 'Dr '))}${showHi ? `<small>${esc(p.nameHi)}</small>` : ''}</div>
+      const paras = S.bioLen === 'none' && x.custom == null ? [] : bioParas(x);
+      const showHi = p.nameHi && (x.lang === 'hi' || S.edition !== 'english');
+      return `<article class="p-card">
+        <div class="p-ph"><img src="${src}" alt="" style="${photoStyle(src)}"></div>
+        <div>
+          <div class="p-name">${esc(p.name)}${showHi ? `<span class="hi">${esc(p.nameHi)}</span>` : ''}</div>
+          ${paras.length ? `<div class="p-bio" lang="${x.lang}">${paras.map((t) => `<p>${esc(t)}</p>`).join('')}</div>` : ''}
         </div>
-        <div class="p-bio" lang="${x.lang}">${paras.map((t) => `<p>${esc(t)}</p>`).join('')}</div>
-      </div>`;
+      </article>`;
     }).join('');
 
     poster.innerHTML = `
-      <header class="p-head">
-        <div class="p-title">${titleLines(S.t1).map((l) => `<span class="t1">${esc(l)}</span>`).join('')}<span class="t2">${esc(S.t2)}</span></div>
-        <div class="p-edition">${ed[0]}<br>${ed[1]}</div>
-        <div class="p-invite">${esc(S.invite)}</div>
-        <div class="p-logo"><img src="assets/img/sehjeevan-logo.png" alt="Sehjeevan"></div>
-        <div class="p-info">
-          <div><span>${esc(dLine)}</span><span>${esc(dayLine)}</span></div>
-          <div><span>${esc(timeLine())}</span><span>${S.tz ? `(${esc(S.tz)})` : ''}</span></div>
-          <div><span>${esc(S.mode)}</span><span>${S.venue ? `(${esc(S.venue.toUpperCase())})` : ''}</span></div>
-          <div><span>${esc(r1)}</span><span>${esc(r2)}</span></div>
+      <div class="p-grain"></div>
+      <div class="p-leaves">${LEAVES}</div>
+      <div class="p-leaves low">${LEAVES}</div>
+      ${S.edition === 'poetry' ? '<img class="p-quill" src="assets/img/quill.png" alt="">' : ''}
+      <div class="p-main">
+        <div class="p-top">
+          <div class="p-logo"><img src="assets/img/sehjeevan-logo.png" alt="Sehjeevan"></div>
+          ${S.hasSession && S.session.trim() ? `<div class="p-session">${esc(S.session)}</div>` : ''}
         </div>
-      </header>
-      ${rows ? `<main class="p-body">${rows}</main>` : '<div class="p-empty">Pick storytellers on the left<br>to fill this poster</div>'}
-      ${S.note || S.link ? `<footer class="p-foot">
-        <img class="p-art" src="${art}" alt="">
-        <div class="p-note">${esc(S.note)}${S.link ? `<span class="p-link">${esc(S.link.replace(/^https?:\/\//, ''))}</span>` : ''}</div>
-        ${qr ? `<div class="p-qr">${qr}</div>` : ''}
-      </footer>` : ''}`;
+        <div class="p-hero">
+          <div class="p-titles">
+            <div class="p-over">Sehjeevan Foundation presents</div>
+            <div class="p-t1">${esc(S.t1)}</div>
+            <div class="p-t2">${esc(S.t2)}</div>
+            <div class="p-edition">${esc(EDITIONS[S.edition].label)}<span class="hi">${esc(th.hi)}</span></div>
+          </div>
+          <div class="p-date ${dt ? '' : 'tba'}">
+            ${dt ? `<div class="wd">${esc(dt.wd)}</div><div class="dd">${dt.dd}</div><div class="my">${esc(dt.my)}</div>` : '<div class="dd">TBA</div>'}
+            <div class="tm">${esc(timeLine())}${S.tz ? `<small>${esc(S.tz)}</small>` : ''}</div>
+          </div>
+        </div>
+        ${cards ? `<section class="p-people ${S.bioLen === 'none' ? 'names' : ''}">${cards}</section>` : '<div class="p-empty">Storytellers appear here</div>'}
+      </div>
+      ${S.edition === 'children' ? '<img class="p-kids" src="assets/img/kids.png" alt="">' : ''}
+      <footer class="p-band">
+        <div class="p-band-row">
+          <div>
+            <div class="p-facts">
+              <div class="p-fact"><small>Where</small><b>${esc(whereLine())}</b></div>
+              <div class="p-fact"><small>Entry</small><b>${esc(S.reg || 'Free')}</b></div>
+            </div>
+            ${S.note.trim() ? `<div class="p-note">${esc(S.note)}</div>` : ''}
+            ${S.hasLink && S.link ? `<div class="p-link">${esc(S.link.replace(/^https?:\/\/(www\.)?/, ''))}</div>` : ''}
+          </div>
+          ${qr ? `<div class="p-qr"><div class="box">${qr}</div><small>Scan to register</small></div>` : ''}
+        </div>
+        <div class="p-sign"><span>Sehjeevan Foundation</span><span>Alternatives of Life with Sustainability &amp; Harmony</span></div>
+      </footer>`;
     fitText();
     fitPreview();
   }
 
-  // Shrink single-line header text until it fits its cell.
+  // shrink one-line titles until they fit the column
   function fitText() {
-    const shrink = (el, box, min) => {
+    const col = poster.querySelector('.p-titles');
+    if (!col) return;
+    poster.querySelectorAll('.p-t1, .p-t2').forEach((el) => {
       el.style.fontSize = '';
-      let size = parseFloat(getComputedStyle(el).fontSize);
-      while ((box || el).scrollWidth > (box || el).clientWidth + 1 && size > min) {
-        size -= 1;
-        el.style.fontSize = size + 'px';
-      }
-    };
-    poster.querySelectorAll('.p-title .t1, .p-title .t2').forEach((el) => shrink(el, null, 26));
-    const ed = poster.querySelector('.p-edition');
-    if (ed) shrink(ed, null, 20);
-    const info = poster.querySelector('.p-info');
-    if (info) shrink(info, null, 13);
-    const inv = poster.querySelector('.p-invite');
-    if (inv) { inv.style.fontSize = ''; let z = 18; while (inv.scrollHeight > inv.clientHeight + 1 && z > 11) inv.style.fontSize = --z + 'px'; }
+      let z = parseFloat(getComputedStyle(el).fontSize);
+      while (el.scrollWidth > col.clientWidth + 1 && z > 30) el.style.fontSize = `${(z -= 2)}px`;
+    });
   }
 
-  /* ---------- preview scaling ---------- */
-  const scaleBox = $('#posterScale');
+  /* ---------- preview: fit the whole poster in the right half ---------- */
+  const box = $('#stageBox'), scaleBox = $('#posterScale');
   function fitPreview() {
-    const avail = $('#stageInner').clientWidth;
-    const k = Math.min(1, avail / 1080);
+    const h = poster.offsetHeight;
+    const k = Math.min(box.clientWidth / 1080, box.clientHeight / h, 0.62);
     poster.style.transform = `scale(${k})`;
     scaleBox.style.width = `${1080 * k}px`;
-    scaleBox.style.height = `${poster.offsetHeight * k}px`;
-    $('#stageMeta').textContent = `1080 × ${poster.offsetHeight}px · preview at ${Math.round(k * 100)}%`;
+    scaleBox.style.height = `${h * k}px`;
+    $('#stageMeta').textContent = `${EDITIONS[S.edition].label} · 1080 × ${h}px${h === 1527 ? ' (A4)' : ''}`;
   }
-  new ResizeObserver(fitPreview).observe($('#stageInner'));
-  poster.addEventListener('load', fitPreview, true); // images settling change height
+  new ResizeObserver(fitPreview).observe(box);
+  poster.addEventListener('load', fitPreview, true);
 
-  /* ---------- controls ---------- */
-  $('#editions').innerHTML = Object.entries(EDITIONS).map(([k, v]) =>
-    `<button type="button" role="radio" data-ed="${k}" aria-checked="${k === S.edition}"><b>${v.label}</b><span>${EDITION_DESC[k]}</span></button>`).join('');
+  /* ---------- steps ---------- */
+  function showStep(i) {
+    S.step = i;
+    $$('.step').forEach((el) => { el.hidden = +el.dataset.step !== i; });
+    $$('#stepper button').forEach((b) => {
+      const n = +b.dataset.step;
+      b.toggleAttribute('aria-current', false);
+      if (n === i) b.setAttribute('aria-current', 'step');
+      b.classList.toggle('done', n < i);
+    });
+    $('#backBtn').disabled = i === 0;
+    $('#nextBtn').hidden = i === STEPS.length - 1;
+    if (i < STEPS.length - 1) $('#nextBtn').textContent = `Next: ${STEPS[i + 1]} →`;
+    $('.steps').scrollTop = 0;
+    if (i === 2) renderPicker();
+    save();
+  }
+  $('#stepper').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) showStep(+b.dataset.step); });
+  $('#backBtn').addEventListener('click', () => showStep(Math.max(0, S.step - 1)));
+  $('#nextBtn').addEventListener('click', () => showStep(Math.min(STEPS.length - 1, S.step + 1)));
+  $('#jumpDownload').addEventListener('click', () => {
+    showStep(3);
+    const d = $('#download');
+    d.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    d.classList.remove('flash'); void d.offsetWidth; d.classList.add('flash');
+  });
+
+  /* ---------- step 1: edition ---------- */
+  $('#editions').innerHTML = Object.entries(EDITIONS).map(([k, v]) => {
+    const t = THEME[k];
+    const title = k === 'poetry' ? TITLES.poetry : TITLES.stories;
+    return `<button type="button" class="ed" role="radio" data-ed="${k}" aria-checked="false">
+      <span class="sw" style="background:${t.bg};color:${t.ink}"><i style="background:${t.band}"></i><i style="background:${t.accent}"></i>
+        <span class="a">${esc(title.t1)}</span><span class="b" style="color:${t.accent}">${esc(title.t2)}</span></span>
+      <span class="tx"><b>${v.label} <span class="hi">${t.hi}</span></b><small>${t.desc}</small></span>
+    </button>`;
+  }).join('');
   $('#editions').addEventListener('click', (e) => {
-    const b = e.target.closest('button');
+    const b = e.target.closest('.ed');
     if (!b) return;
-    const prev = S.edition;
-    S.edition = b.dataset.ed;
-    // swap the default title in or out of the poetry edition, but never overwrite custom titles
-    const isDefault = (t) => S.t1 === t.t1 && S.t2 === t.t2;
-    if (S.edition === 'poetry' && isDefault(DEFAULT_TITLE)) Object.assign(S, POETRY_TITLE);
-    if (prev === 'poetry' && S.edition !== 'poetry' && isDefault(POETRY_TITLE)) Object.assign(S, DEFAULT_TITLE);
-    S.people.forEach((x) => { if (x.custom == null) x.lang = langFor(S.edition, byId[x.id]); });
-    $('#editions').querySelectorAll('button').forEach((x) => x.setAttribute('aria-checked', x === b));
-    syncFields();
+    const prev = S.edition, next = b.dataset.ed;
+    if (prev === next) return;
+    // swap the default title between stories and poetry, but keep custom titles
+    const from = prev === 'poetry' ? TITLES.poetry : TITLES.stories;
+    const to = next === 'poetry' ? TITLES.poetry : TITLES.stories;
+    if (S.t1 === from.t1 && S.t2 === from.t2) Object.assign(S, to);
+    S.edition = next;
+    S.people.forEach((x) => { if (x.custom == null) x.lang = langFor(next, byId[x.id]); });
+    syncControls();
     update();
   });
 
-  const FIELDS = { date: 'f-date', day: 'f-day', start: 'f-start', end: 'f-end', tz: 'f-tz', mode: 'f-mode', venue: 'f-venue', reg: 'f-reg', link: 'f-link', invite: 'f-invite', note: 'f-note', t1: 'f-t1', t2: 'f-t2', shape: 'f-shape', layout: 'f-layout', size: 'f-size' };
-  function syncFields() {
-    Object.entries(FIELDS).forEach(([k, id]) => { $('#' + id).value = S[k]; });
-    $('#f-qr').checked = S.qr;
-    $('#sizeOut').textContent = `${S.size}%`;
-    const d = S.date ? new Date(S.date + 'T00:00') : null;
-    $('#f-day').placeholder = d ? d.toLocaleDateString('en-GB', { weekday: 'long' }) : 'auto';
-  }
+  /* ---------- step 2: when & where ---------- */
+  const FIELDS = { date: 'f-date', day: 'f-day', start: 'f-start', end: 'f-end', tz: 'f-tz', venue: 'f-venue', reg: 'f-reg', link: 'f-link', session: 'f-session', t1: 'f-t1', t2: 'f-t2', note: 'f-note' };
   Object.entries(FIELDS).forEach(([k, id]) => {
     $('#' + id).addEventListener('input', (e) => {
-      S[k] = k === 'size' ? +e.target.value : e.target.value;
-      if (k === 'size') $('#sizeOut').textContent = `${S.size}%`;
-      if (k === 'date') syncFields();
-      update();
+      S[k] = e.target.value;
+      if (k === 'date') $('#f-day').placeholder = dateBits() ? new Date(S.date + 'T00:00').toLocaleDateString('en-GB', { weekday: 'long' }) : 'auto';
+      if (k === 'venue' || k === 'reg') syncChips();
+      update(false);
     });
   });
-  $('#f-qr').addEventListener('change', (e) => { S.qr = e.target.checked; update(); });
-  $('#resetBtn').addEventListener('click', () => {
-    S = DEFAULTS();
-    S.people = ['arpna-chandail', 'ganesh-madulkar', 'noopur-mathur'].map((id) => entry(id, S.edition));
-    $('#editions').querySelectorAll('button').forEach((x) => x.setAttribute('aria-checked', x.dataset.ed === S.edition));
-    syncFields();
-    update();
+  $('#modeSeg').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    S.mode = b.dataset.mode;
+    if (S.mode === 'IN PERSON' && VENUES.ONLINE.includes(S.venue)) S.venue = '';
+    if (S.mode !== 'IN PERSON' && !S.venue) S.venue = 'Google Meet';
+    syncControls();
+    update(false);
   });
+  $('#venueSuggest').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.venue = b.dataset.v; syncControls(); update(false); } });
+  $('#regSuggest').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.reg = b.dataset.v; syncControls(); update(false); } });
+  $('#f-haslink').addEventListener('change', (e) => { S.hasLink = e.target.checked; syncControls(); update(false); if (S.hasLink) $('#f-link').focus(); });
+  $('#f-qr').addEventListener('change', (e) => { S.qr = e.target.checked; update(false); });
+  $('#f-hassession').addEventListener('change', (e) => { S.hasSession = e.target.checked; syncControls(); update(false); if (S.hasSession) $('#f-session').focus(); });
 
-  /* selected list */
+  function syncChips() {
+    $('#venueSuggest').innerHTML = VENUES[S.mode].map((v) => `<button type="button" data-v="${v}" aria-pressed="${S.venue === v}">${v}</button>`).join('');
+    $('#regSuggest').innerHTML = REGS.map((v) => `<button type="button" data-v="${v}" aria-pressed="${S.reg === v}">${v}</button>`).join('');
+  }
+  function syncControls() {
+    Object.entries(FIELDS).forEach(([k, id]) => { const el = $('#' + id); if (el.value !== S[k]) el.value = S[k]; });
+    $$('#editions .ed').forEach((b) => b.setAttribute('aria-checked', b.dataset.ed === S.edition));
+    $$('#modeSeg button').forEach((b) => b.setAttribute('aria-checked', b.dataset.mode === S.mode));
+    $('#venueLabel').textContent = S.mode === 'ONLINE' ? 'Platform' : S.mode === 'HYBRID' ? 'Venue & platform' : 'Venue';
+    $('#f-venue').placeholder = S.mode === 'ONLINE' ? 'Google Meet' : 'e.g. Community library, Bhopal';
+    $('#f-haslink').checked = S.hasLink; $('#linkBox').hidden = !S.hasLink; $('#f-qr').checked = S.qr;
+    $('#f-hassession').checked = S.hasSession; $('#sessionBox').hidden = !S.hasSession;
+    $$('#bioSeg button').forEach((b) => b.setAttribute('aria-checked', b.dataset.bio === S.bioLen));
+    $$('#shapeSeg button').forEach((b) => b.setAttribute('aria-checked', b.dataset.shape === S.shape));
+    $$('#qualSeg button').forEach((b) => b.setAttribute('aria-checked', +b.dataset.q === +S.q));
+    $$('#scopeSeg button').forEach((b) => b.setAttribute('aria-checked', b.dataset.scope === S.scope));
+    const d = dateBits();
+    $('#f-day').placeholder = d ? new Date(S.date + 'T00:00').toLocaleDateString('en-GB', { weekday: 'long' }) : 'auto';
+    syncChips();
+  }
+
+  /* ---------- step 3: storytellers ---------- */
   function renderSelected() {
     const n = S.people.length;
-    $('#selCount').textContent = n ? `${n} selected${n > 4 ? ' · poster grows taller' : ''}` : '';
-    $('#selEmpty').hidden = n > 0;
     $('#selected').innerHTML = S.people.map((x, i) => {
       const p = byId[x.id];
       const src = p.photos[x.photo] || p.photos[0];
-      const text = x.custom != null ? x.custom : bio(p, x.lang).join('\n\n');
       return `<li class="sel" data-i="${i}">
         <div class="sel-top">
           <span class="ph"><img src="${src}" alt="" style="${photoStyle(src)}"></span>
@@ -220,7 +297,7 @@
           <span class="tools">
             <button class="icon-btn" type="button" data-act="up" aria-label="Move up" ${i === 0 ? 'disabled' : ''}>↑</button>
             <button class="icon-btn" type="button" data-act="down" aria-label="Move down" ${i === n - 1 ? 'disabled' : ''}>↓</button>
-            <button class="icon-btn" type="button" data-act="remove" aria-label="Remove">✕</button>
+            <button class="icon-btn" type="button" data-act="remove" aria-label="Remove ${esc(p.name)}">✕</button>
           </span>
         </div>
         <div class="sel-opts">
@@ -229,10 +306,10 @@
             <button type="button" data-lang="en" aria-pressed="${x.lang === 'en'}" ${p.bios.en ? '' : 'disabled title="No English bio in the archive"'}>English</button>
           </span>
           ${p.photos.length > 1 ? `<span class="seg" role="group" aria-label="Photo">${p.photos.map((_, k) => `<button type="button" data-photo="${k}" aria-pressed="${k === x.photo}">Photo ${k + 1}</button>`).join('')}</span>` : ''}
-          <button class="edit-toggle" type="button" data-act="edit">${x.editing ? 'Done' : 'Edit bio'}</button>
-          ${x.custom != null ? '<button class="edit-toggle" type="button" data-act="revert">Restore original</button>' : ''}
+          <button class="linkish" type="button" data-act="edit">${editing === i ? 'Done editing' : 'Edit bio'}</button>
+          ${x.custom != null ? '<button class="linkish" type="button" data-act="revert">Restore original</button>' : ''}
         </div>
-        ${x.editing ? `<textarea data-bio aria-label="Bio for ${esc(p.name)}" lang="${x.lang}">${esc(text)}</textarea>` : ''}
+        ${editing === i ? `<textarea data-bio aria-label="Bio for ${esc(p.name)}" lang="${x.lang}">${esc(x.custom != null ? x.custom : bioParas(x).join('\n\n'))}</textarea>` : ''}
       </li>`;
     }).join('');
   }
@@ -245,9 +322,10 @@
     if (act === 'up' || act === 'down') {
       const j = act === 'up' ? i - 1 : i + 1;
       [S.people[i], S.people[j]] = [S.people[j], S.people[i]];
-    } else if (act === 'remove') S.people.splice(i, 1);
-    else if (act === 'edit') x.editing = !x.editing;
-    else if (act === 'revert') { x.custom = null; x.editing = false; }
+      editing = null;
+    } else if (act === 'remove') { S.people.splice(i, 1); editing = null; }
+    else if (act === 'edit') editing = editing === i ? null : i;
+    else if (act === 'revert') { x.custom = null; editing = null; }
     else if (b.dataset.lang) { x.lang = b.dataset.lang; x.custom = null; }
     else if (b.dataset.photo) x.photo = +b.dataset.photo;
     update();
@@ -259,38 +337,46 @@
     save();
   });
 
-  /* picker */
   let pq = '';
   function renderPicker() {
     const on = new Set(S.people.map((x) => x.id));
-    const list = D.storytellers.filter((p) => matches(p, pq));
-    const edFirst = list.slice().sort((a, b) => (b.editions.includes(S.edition) - a.editions.includes(S.edition)));
-    $('#pickerList').innerHTML = edFirst.map((p) => `<button type="button" class="pk" data-id="${p.id}" aria-pressed="${on.has(p.id)}" title="${esc(p.name)}">
-      <span class="dot">${p.editions.map((e) => `<i class="${e}" title="${EDITIONS[e].short}"></i>`).join('')}</span>
+    let list = D.storytellers.filter((p) => matches(p, pq));
+    if (S.scope === 'edition') {
+      const inEd = list.filter((p) => p.editions.includes(S.edition));
+      if (inEd.length) list = inEd;
+    }
+    $('#pickerList').innerHTML = list.map((p) => `<button type="button" class="pk" data-id="${p.id}" aria-pressed="${on.has(p.id)}">
       <span class="ph"><img src="${p.photos[0]}" alt="" loading="lazy" style="${photoStyle(p.photos[0])}"></span>
-      <b>${esc(p.name)}</b></button>`).join('');
+      <b>${esc(p.name)}</b></button>`).join('') || '<p class="hint">Nobody matches that search.</p>';
   }
   $('#pq').addEventListener('input', (e) => { pq = e.target.value.trim(); renderPicker(); });
+  $('#scopeSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.scope = b.dataset.scope; syncControls(); renderPicker(); save(); } });
   $('#pickerList').addEventListener('click', (e) => {
     const b = e.target.closest('.pk');
     if (!b) return;
     const i = S.people.findIndex((x) => x.id === b.dataset.id);
     if (i >= 0) S.people.splice(i, 1); else S.people.push(entry(b.dataset.id, S.edition));
+    editing = null;
     update();
   });
 
+  /* ---------- step 4: finish ---------- */
+  $('#bioSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.bioLen = b.dataset.bio; syncControls(); update(); } });
+  $('#shapeSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.shape = b.dataset.shape; syncControls(); update(false); } });
+  $('#qualSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.q = +b.dataset.q; syncControls(); save(); } });
+  $('#resetBtn').addEventListener('click', () => { S = DEFAULTS(); editing = null; syncControls(); update(); showStep(0); });
+
   function save() {
-    store.set('sj.poster', Object.assign({}, S, { people: S.people.map(({ editing, ...x }) => x) }));
+    store.set('sj.poster', S);
   }
-  function update() {
-    renderSelected();
-    renderPicker();
+  function update(lists = true) {
+    if (lists) { renderSelected(); if (S.step === 2) renderPicker(); }
     renderPoster();
     save();
   }
 
   /* =========================================================
-     Export: PNG / JPG / PDF / Print
+     Export: PNG / JPG / PDF (A4) / Print
      ========================================================= */
   let fontCSS = null;
   async function embedFonts() {
@@ -310,7 +396,7 @@
   async function render(kind, ratio) {
     await document.fonts.ready;
     const opts = {
-      pixelRatio: ratio, width: 1080, height: poster.offsetHeight, backgroundColor: '#f6f5f1',
+      pixelRatio: ratio, width: 1080, height: poster.offsetHeight, backgroundColor: THEME[S.edition].bg,
       style: { transform: 'none' }, fontEmbedCSS: await embedFonts(), quality: 0.95,
     };
     const fn = kind === 'jpg' ? htmlToImage.toJpeg : htmlToImage.toPng;
@@ -326,7 +412,7 @@
   }
 
   function fileBase() {
-    return ['sehjeevan', S.t2.toLowerCase().replace(/[^a-z0-9]+/g, '-'), S.edition, S.date].filter(Boolean).join('-');
+    return ['sehjeevan', S.edition, 'edition', S.date].filter(Boolean).join('-');
   }
   function download(url, name) {
     const a = document.createElement('a');
@@ -338,37 +424,25 @@
   }
 
   async function exportAs(fmt) {
-    const ratio = +document.querySelector('input[name="q"]:checked').value;
     const status = $('#exportStatus');
-    const buttons = document.querySelectorAll('.fmt');
+    const buttons = $$('.fmt');
     status.className = 'status';
     status.textContent = 'Rendering poster…';
     buttons.forEach((b) => (b.disabled = true));
     try {
       if (fmt === 'png' || fmt === 'jpg') {
-        const url = await render(fmt, ratio);
-        download(url, `${fileBase()}.${fmt}`);
-      } else if (fmt === 'pdf' || fmt === 'pdf-a4') {
-        const url = await render('jpg', Math.max(ratio, 2));
+        download(await render(fmt, S.q), `${fileBase()}.${fmt}`);
+      } else if (fmt === 'pdf') {
+        const url = await render('jpg', Math.max(S.q, 2));
         const [w, h] = await imgSize(url);
-        const { jsPDF } = window.jspdf;
-        let pdf;
-        if (fmt === 'pdf') {
-          const pw = (1080 * 72) / 96, ph = (pw * h) / w;
-          pdf = new jsPDF({ unit: 'pt', format: [pw, ph], orientation: ph >= pw ? 'portrait' : 'landscape' });
-          pdf.addImage(url, 'JPEG', 0, 0, pw, ph);
-        } else {
-          pdf = new jsPDF({ unit: 'mm', format: 'a4' });
-          const m = 8, bw = 210 - 2 * m, bh = 297 - 2 * m;
-          const k = Math.min(bw / w, bh / h), iw = w * k, ih = h * k;
-          pdf.addImage(url, 'JPEG', (210 - iw) / 2, (297 - ih) / 2, iw, ih);
-        }
-        pdf.save(`${fileBase()}${fmt === 'pdf-a4' ? '-a4' : ''}.pdf`);
+        const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+        const k = Math.min(210 / w, 297 / h), iw = w * k, ih = h * k;
+        pdf.addImage(url, 'JPEG', (210 - iw) / 2, (297 - ih) / 2, iw, ih);
+        pdf.save(`${fileBase()}.pdf`);
       } else if (fmt === 'print') {
-        const url = await render('png', Math.max(ratio, 2));
-        printImage(url);
+        printImage(await render('png', Math.max(S.q, 2)));
       }
-      status.textContent = fmt === 'print' ? 'Opening print dialog…' : 'Done: check your downloads.';
+      status.textContent = fmt === 'print' ? 'Opening print dialog…' : 'Done. Check your downloads.';
     } catch (err) {
       console.error(err);
       status.className = 'status err';
@@ -377,6 +451,7 @@
       buttons.forEach((b) => (b.disabled = false));
     }
   }
+  $('.formats').addEventListener('click', (e) => { const b = e.target.closest('.fmt'); if (b) exportAs(b.dataset.fmt); });
 
   function printImage(url) {
     const f = document.createElement('iframe');
@@ -384,25 +459,15 @@
     document.body.appendChild(f);
     const doc = f.contentDocument;
     doc.open();
-    doc.write(`<!doctype html><title>${esc(fileBase())}</title><style>@page{size:A4;margin:8mm}html,body{margin:0}img{display:block;width:100%;height:auto;max-height:281mm;object-fit:contain;margin:0 auto}</style><img src="${url}">`);
+    doc.write(`<!doctype html><title>${esc(fileBase())}</title><style>@page{size:A4;margin:0}html,body{margin:0}img{display:block;width:100%;height:auto;max-height:297mm;object-fit:contain;margin:0 auto}</style><img src="${url}">`);
     doc.close();
     const img = doc.querySelector('img');
     const go = () => { f.contentWindow.focus(); f.contentWindow.print(); setTimeout(() => f.remove(), 60000); };
     if (img.complete) go(); else img.onload = go;
   }
 
-  const dlg = $('#exportDlg');
-  $('#printBtn').addEventListener('click', () => {
-    $('#exportStatus').textContent = S.people.length ? '' : 'Tip: add at least one storyteller first.';
-    dlg.showModal();
-  });
-  dlg.addEventListener('click', (e) => {
-    if (e.target === dlg || e.target.closest('[data-close]')) return dlg.close();
-    const b = e.target.closest('.fmt');
-    if (b) exportAs(b.dataset.fmt);
-  });
-
-  syncFields();
+  syncControls();
   update();
+  showStep(urlIds.length ? 2 : Math.min(S.step || 0, 3));
   document.fonts.ready.then(() => { fitText(); fitPreview(); });
 })();

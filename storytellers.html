@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>All Storytellers · Sehjeevan</title>
+  <meta name="description" content="Every storyteller and poet who has shared a story at Sehjeevan's The World of Stories and Kavita Samvad sessions.">
+  <link rel="icon" href="assets/img/sehjeevan-logo.png">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Sehjeevan home"><img src="assets/img/sehjeevan-logo.png" alt="Sehjeevan: Alternatives of Life with Sustainability & Harmony"></a>
+    <nav>
+      <a href="./" class="hide-sm">Home</a>
+      <a href="https://www.youtube.com/@Sehjeevan/videos" target="_blank" rel="noopener" class="nav-yt"><svg viewBox="0 0 28 20" width="24" height="17" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#FF0000"/><path d="M11 5.5v9l7.8-4.5L11 5.5Z" fill="#fff"/></svg><span class="hide-sm">Listen</span></a>
+      <a class="btn btn-primary" href="poster.html">Poster Studio</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section page-top">
+      <div class="section-head">
+        <p class="eyebrow">The World of Stories</p>
+        <h1 class="page-title">All storytellers <span class="hi">सभी कथाकार</span></h1>
+        <p>Teachers, writers, poets and theatre folk who have shared stories with the Sehjeevan circle.</p>
+      </div>
+      <div class="toolbar">
+        <label class="search">
+          <span class="sr-only">Search storytellers</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Zm5.3-2.2L21 21"/></svg>
+          <input id="q" type="search" placeholder="Search by name, city, book…" autocomplete="off">
+        </label>
+        <div class="filters" id="filters" role="group" aria-label="Filter by edition"></div>
+        <span class="count" id="count" aria-live="polite"></span>
+      </div>
+      <div class="grid" id="grid"></div>
+      <p class="empty" id="empty" hidden>No storytellers match that search.</p>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <img src="assets/img/reader.png" alt="" class="foot-reader">
+    <p>Missed a session? <a href="https://www.youtube.com/@Sehjeevan/videos" target="_blank" rel="noopener">Listen to the recordings on YouTube</a>.</p>
+    <p class="small">© Sehjeevan Foundation · Alternatives of Life with Sustainability &amp; Harmony</p>
+  </footer>
+
+  <dialog class="profile" id="profile">
+    <button class="close" type="button" aria-label="Close" data-close>×</button>
+    <div class="profile-body" id="profileBody"></div>
+  </dialog>
+
+  <script src="data/storytellers.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

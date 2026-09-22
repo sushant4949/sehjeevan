@@ -2,8 +2,9 @@
 
 A small static site for **Sehjeevan Foundation's** online storytelling circle.
 
-- **`index.html`**: an interactive directory of every storyteller and poet from the poster archive. It has search, edition filters (Hindi / English / Children / Poetry), full bios in Hindi and English, and a timeline of past sessions.
-- **`poster.html`** (Poster Studio): builds a print-ready *The World of Stories* poster. Pick the edition, date, time, platform, registration text and link (rendered with a QR code), choose storytellers, reorder them, switch bio language or edit bios, then **Print / Download** as **PNG, JPG, PDF (A4 or poster size)** or send it straight to the printer.
+- **`index.html`**: home page with two rows of featured storytellers and a link to the [Sehjeevan YouTube channel](https://www.youtube.com/@Sehjeevan/videos) to listen to past sessions.
+- **`storytellers.html`**: every storyteller and poet from the poster archive, with search, edition filters (Hindi / English / Children / Poetry) and full bios in Hindi and English.
+- **`poster.html`** (Poster Studio): builds an A4 poster in four steps: edition (sets the colour theme), when & where (a registration link with QR code is optional), storytellers, and finishing touches. Download as **PNG, JPG or A4 PDF**, or print directly.
 
 Everything runs in the browser. There is no build step and no server code.
 
@@ -28,10 +29,10 @@ If a photo isn't a tight headshot, add a focal point for it in `FOCUS` in `js/co
 ## Structure
 
 ```
-index.html · poster.html
-css/     base.css (tokens, shared UI) · site.css · poster.css (studio + poster canvas)
+index.html · storytellers.html · poster.html
+css/     base.css (tokens, shared UI) · site.css (home + directory) · poster.css (studio + poster themes)
 js/      common.js (data helpers) · site.js · poster.js (builder + export)
 data/    storytellers.js
-assets/  photos/ · img/ (logo, illustrations, paper texture) · fonts/ (Archivo, Archivo Black, Hind)
+assets/  photos/ · img/ (logo, illustrations, textures) · fonts/ (League Spartan, Anek Devanagari)
 vendor/  html-to-image, jsPDF, qrcode-generator
 ```
