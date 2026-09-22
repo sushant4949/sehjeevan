@@ -33,6 +33,6 @@ index.html · storytellers.html · poster.html
 css/     base.css (tokens, shared UI) · site.css (home + directory) · poster.css (studio + poster themes)
 js/      common.js (data helpers) · site.js · poster.js (builder + export)
 data/    storytellers.js
-assets/  photos/ · img/ (logo, illustrations, textures) · fonts/ (League Spartan, Anek Devanagari)
+assets/  photos/ · img/ (logo, illustrations, textures) · fonts/ (Inter, League Spartan for all-caps titles, Anek Devanagari)
 vendor/  html-to-image, jsPDF, qrcode-generator
 ```

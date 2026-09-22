@@ -5,7 +5,7 @@
   padding: clamp(32px, 7vw, 96px) clamp(16px, 4vw, 48px) clamp(24px, 5vw, 72px);
 }
 .eyebrow { font-family: var(--sans); font-weight: 700; text-transform: uppercase; letter-spacing: .14em; font-size: .8rem; color: var(--green-deep); margin: 0 0 .8rem; }
-.wordmark { margin: 0; font-family: var(--display); font-weight: 800; line-height: .9; letter-spacing: -.01em; text-transform: uppercase; }
+.wordmark { margin: 0; font-family: var(--caps); font-weight: 800; line-height: .9; letter-spacing: -.01em; text-transform: uppercase; }
 .wordmark .wm-red { display: block; color: var(--red); font-size: clamp(2.4rem, 5.2vw, 4.4rem); }
 .wordmark .wm-green { display: block; color: var(--green); font-size: clamp(3.3rem, 8.2vw, 6.9rem); margin-top: .08em; }
 .lede { font-size: clamp(1.05rem, 1.6vw, 1.22rem); line-height: 1.6; color: #463f38; max-width: 34rem; margin: 1.4rem 0 1.6rem; }
@@ -98,7 +98,7 @@
 .yt-copy { flex: 1; }
 .yt-copy b { display: block; font-family: var(--display); font-weight: 700; font-size: clamp(1.4rem, 2.6vw, 2.1rem); letter-spacing: -.02em; line-height: 1.1; }
 .yt-copy span { display: block; opacity: .8; margin-top: .4rem; font-size: 1.05rem; }
-.yt-go { flex: none; font-family: var(--sans); font-weight: 700; background: #fff; color: var(--ink); border-radius: 999px; padding: .8em 1.3em .65em; }
+.yt-go { flex: none; font-family: var(--sans); font-weight: 700; background: #fff; color: var(--ink); border-radius: 999px; padding: .75em 1.3em; }
 @media (max-width: 640px) { .yt-photo { aspect-ratio: 16 / 7; object-position: 30% 50%; } .yt-row { flex-wrap: wrap; } .yt-go { width: 100%; text-align: center; } }
 
 /* ---------- Page bits ---------- */

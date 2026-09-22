@@ -15,9 +15,10 @@
   --rule: #7d3b3b;
   --shadow: 0 1px 2px rgba(38, 34, 31, .06), 0 8px 24px rgba(38, 34, 31, .08);
   --radius: 14px;
-  --display: 'League Spartan', 'Anek Devanagari', system-ui, sans-serif;
-  --sans: 'League Spartan', 'Anek Devanagari', system-ui, sans-serif;
-  --text: 'Anek Devanagari', 'League Spartan', system-ui, sans-serif;
+  --display: 'Inter', 'Anek Devanagari', system-ui, sans-serif;
+  --caps: 'League Spartan', 'Anek Devanagari', system-ui, sans-serif; /* only for all-caps text */
+  --sans: 'Inter', 'Anek Devanagari', system-ui, sans-serif;
+  --text: 'Anek Devanagari', 'Inter', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -77,4 +78,3 @@ a { color: var(--green-deep); }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .nav-yt { display: inline-flex; align-items: center; gap: .45rem; }
-.btn { padding-top: .85em; padding-bottom: .7em; }
