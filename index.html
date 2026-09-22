@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The World of Stories · Sehjeevan</title>
+  <meta name="description" content="Meet the storytellers and poets of Sehjeevan Foundation's online storytelling circle — Hindi, English, Children and Poetry editions.">
+  <link rel="icon" href="assets/img/sehjeevan-logo.png">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Sehjeevan home"><img src="assets/img/sehjeevan-logo.png" alt="Sehjeevan — Alternatives of Life with Sustainability & Harmony"></a>
+    <nav>
+      <a href="#storytellers" class="hide-sm">Storytellers</a>
+      <a href="#sessions" class="hide-sm">Sessions</a>
+      <a class="btn btn-primary" href="poster.html">Poster Studio</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">Sehjeevan Foundation presents</p>
+        <h1 class="wordmark">
+          <span class="wm-red">The<br>World of</span>
+          <span class="wm-green">Stories</span>
+        </h1>
+        <p class="lede">A monthly online storytelling circle where teachers, writers, poets and theatre folk share stories in Hindi and English, for children and for grown-ups.</p>
+        <div class="hero-cta">
+          <a class="btn btn-green" href="#storytellers">Meet the storytellers</a>
+          <a class="btn btn-ghost" href="poster.html">Design a poster →</a>
+        </div>
+        <dl class="stats">
+          <div><dt id="stat-people">—</dt><dd>storytellers</dd></div>
+          <div><dt id="stat-sessions">—</dt><dd>sessions</dd></div>
+          <div><dt>4</dt><dd>editions</dd></div>
+        </dl>
+      </div>
+      <div class="hero-mosaic" id="mosaic" aria-hidden="true"></div>
+    </section>
+
+    <section id="storytellers" class="section">
+      <div class="section-head reveal">
+        <h2>Storytellers <span class="hi">कथाकार</span></h2>
+        <p>Tap anyone to read their story. Tick <b>+ Poster</b> to add them to a poster.</p>
+      </div>
+      <div class="toolbar reveal">
+        <label class="search">
+          <span class="sr-only">Search storytellers</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Zm5.3-2.2L21 21"/></svg>
+          <input id="q" type="search" placeholder="Search by name, city, book…" autocomplete="off">
+        </label>
+        <div class="filters" id="filters" role="group" aria-label="Filter by edition"></div>
+        <span class="count" id="count" aria-live="polite"></span>
+      </div>
+      <div class="grid" id="grid"></div>
+      <p class="empty" id="empty" hidden>No storytellers match that search.</p>
+    </section>
+
+    <section id="sessions" class="section">
+      <div class="section-head reveal">
+        <h2>Past sessions <span class="hi">सत्र</span></h2>
+        <p>Every poster from the archive, newest first.</p>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <img src="assets/img/reader.png" alt="" class="foot-reader">
+    <p>We’d love to have you at our storytelling sessions. Let us know you’re interested and we’ll send the Google Meet link.</p>
+    <p class="small">© Sehjeevan Foundation · Alternatives of Life with Sustainability &amp; Harmony</p>
+  </footer>
+
+  <div class="tray" id="tray" hidden>
+    <div class="tray-faces" id="trayFaces"></div>
+    <span id="trayLabel"></span>
+    <button class="btn btn-ghost tray-clear" id="trayClear" type="button">Clear</button>
+    <a class="btn btn-primary" id="trayGo" href="poster.html">Create poster →</a>
+  </div>
+
+  <dialog class="profile" id="profile">
+    <button class="close" type="button" aria-label="Close" data-close>×</button>
+    <div class="profile-body" id="profileBody"></div>
+  </dialog>
+
+  <script src="data/storytellers.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

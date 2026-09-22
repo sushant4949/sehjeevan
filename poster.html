@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Poster Studio · Sehjeevan</title>
+  <meta name="description" content="Build a print-ready 'The World of Stories' poster: pick storytellers, edition, date and time, then download as PNG, JPG or PDF.">
+  <link rel="icon" href="assets/img/sehjeevan-logo.png">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/poster.css">
+</head>
+<body class="studio">
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Back to storytellers"><img src="assets/img/sehjeevan-logo.png" alt="Sehjeevan"></a>
+    <nav>
+      <a href="./" class="hide-sm">← Storytellers</a>
+      <button class="btn btn-primary" id="printBtn" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2M6 14h12v7H6z"/></svg>
+        Print / Download
+      </button>
+    </nav>
+  </header>
+
+  <div class="studio-grid">
+    <aside class="panel" id="panel">
+      <section class="block">
+        <h2><span class="n">1</span> Edition</h2>
+        <div class="editions" id="editions" role="radiogroup" aria-label="Edition"></div>
+      </section>
+
+      <section class="block">
+        <h2><span class="n">2</span> When &amp; where</h2>
+        <div class="row2">
+          <label class="field"><span>Date</span><input type="date" id="f-date"></label>
+          <label class="field"><span>Day</span><input type="text" id="f-day" placeholder="auto"></label>
+        </div>
+        <div class="row3">
+          <label class="field"><span>Starts</span><input type="time" id="f-start" value="16:30"></label>
+          <label class="field"><span>Ends</span><input type="time" id="f-end" value="18:00"></label>
+          <label class="field"><span>Zone</span>
+            <select id="f-tz"><option>IST</option><option>GMT</option><option>EST</option><option>PST</option><option>CET</option><option value="">—</option></select>
+          </label>
+        </div>
+        <div class="row2">
+          <label class="field"><span>Mode</span>
+            <select id="f-mode"><option>ONLINE</option><option>OFFLINE</option><option>HYBRID</option></select>
+          </label>
+          <label class="field"><span>Platform / venue</span><input type="text" id="f-venue" value="Google Meet" list="venues"></label>
+          <datalist id="venues"><option value="Google Meet"><option value="Zoom"><option value="YouTube Live"></datalist>
+        </div>
+        <label class="field"><span>Registration</span>
+          <input type="text" id="f-reg" value="Free Registration" list="regs">
+          <datalist id="regs"><option value="Free Registration"><option value="Free Entry"><option value="All Welcome"></datalist>
+        </label>
+        <label class="field"><span>Registration link <em>(prints as text + QR code)</em></span><input type="url" id="f-link" placeholder="https://forms.gle/…"></label>
+        <label class="check"><input type="checkbox" id="f-qr" checked> Show QR code for the link</label>
+        <label class="field"><span>Invitation line <em>(optional)</em></span><input type="text" id="f-invite" placeholder="Sehjeevan Foundation invites you to the 24th session"></label>
+        <label class="field"><span>Footer note <em>(optional)</em></span><textarea id="f-note" rows="2">We'd love to have you at our storytelling session. Register and we'll send you the Google Meet link.</textarea></label>
+      </section>
+
+      <section class="block">
+        <h2><span class="n">3</span> Storytellers <small id="selCount"></small></h2>
+        <ol class="selected" id="selected"></ol>
+        <p class="hint" id="selEmpty">Pick storytellers from the list below. Three fit the classic layout best.</p>
+        <div class="picker">
+          <input type="search" id="pq" placeholder="Search 32 storytellers…" autocomplete="off">
+          <div class="picker-list" id="pickerList"></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2><span class="n">4</span> Look</h2>
+        <div class="row2">
+          <label class="field"><span>Title (red)</span><input type="text" id="f-t1" value="THE WORLD OF"></label>
+          <label class="field"><span>Title (green)</span><input type="text" id="f-t2" value="STORIES"></label>
+        </div>
+        <div class="row2">
+          <label class="field"><span>Photo frame</span>
+            <select id="f-shape"><option value="square">Square</option><option value="circle">Circle</option></select>
+          </label>
+          <label class="field"><span>Layout</span>
+            <select id="f-layout"><option value="zigzag">Zig-zag</option><option value="left">Photos left</option></select>
+          </label>
+        </div>
+        <label class="field"><span>Bio text size <output id="sizeOut">100%</output></span><input type="range" id="f-size" min="80" max="120" value="100"></label>
+        <button class="btn btn-ghost small" type="button" id="resetBtn">Reset poster</button>
+      </section>
+    </aside>
+
+    <section class="stage" id="stage" aria-label="Poster preview">
+      <div class="stage-inner" id="stageInner">
+        <div class="poster-scale" id="posterScale">
+          <div class="poster" id="poster"></div>
+        </div>
+      </div>
+      <div class="stage-meta" id="stageMeta"></div>
+    </section>
+  </div>
+
+  <dialog class="export" id="exportDlg">
+    <button class="close" type="button" aria-label="Close" data-close>×</button>
+    <h2>Your poster is ready</h2>
+    <p class="sub">Choose a format. Everything is generated in your browser.</p>
+    <div class="quality" role="radiogroup" aria-label="Resolution">
+      <span>Resolution</span>
+      <label><input type="radio" name="q" value="1"> Web</label>
+      <label><input type="radio" name="q" value="2" checked> High</label>
+      <label><input type="radio" name="q" value="3"> Print (3×)</label>
+    </div>
+    <div class="formats">
+      <button type="button" class="fmt" data-fmt="png"><b>PNG</b><span>Crisp, lossless, best for WhatsApp &amp; social</span></button>
+      <button type="button" class="fmt" data-fmt="jpg"><b>JPG</b><span>Smaller file, quick to share</span></button>
+      <button type="button" class="fmt" data-fmt="pdf-a4"><b>PDF · A4</b><span>Centred on an A4 page for office printers</span></button>
+      <button type="button" class="fmt" data-fmt="pdf"><b>PDF · Poster size</b><span>Exact poster proportions, no margins</span></button>
+      <button type="button" class="fmt" data-fmt="print"><b>Print now</b><span>Open your printer dialog</span></button>
+    </div>
+    <p class="status" id="exportStatus" aria-live="polite"></p>
+  </dialog>
+
+  <script src="vendor/html-to-image.js"></script>
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="vendor/qrcode.js"></script>
+  <script src="data/storytellers.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/poster.js"></script>
+</body>
+</html>
