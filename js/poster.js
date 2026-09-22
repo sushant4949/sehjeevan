@@ -9,7 +9,7 @@
     hindi:    { bg: '#f7f2e8', tile: '#3f8f4e', badge: '#9b2a2b', hi: 'हिंदी संस्करण', desc: 'Hindi bios · green date card, leaves' },
     english:  { bg: '#f5f3ee', tile: '#9b2a2b', badge: '#1f5a35', hi: 'अंग्रेज़ी संस्करण', desc: 'English bios · red date card' },
     children: { bg: '#fbf3df', tile: '#e8913a', badge: '#3f8f4e', hi: 'बाल संस्करण', desc: 'Warm cream · kids illustration' },
-    poetry:   { bg: '#f8efe9', tile: '#7a2224', badge: '#7a2224', hi: 'कविता संवाद', desc: 'Kavita Samvad · quill, maroon accents' },
+    poetry:   { bg: '#f8efe9', tile: '#7a2224', badge: '#7a2224', hi: 'कविता संवाद', desc: 'Kavita Samvad · maroon accents' },
   };
   const TITLES = {
     stories: { t1: 'The World of', t2: 'Stories' },
@@ -125,7 +125,6 @@
       <div class="p-grain"></div>
       <div class="p-leaves">${LEAVES}</div>
       <div class="p-leaves low">${LEAVES}</div>
-      ${S.edition === 'poetry' ? '<img class="p-quill" src="assets/img/quill.png" alt="">' : ''}
       ${S.edition === 'children' ? '<div class="p-dots"></div>' : ''}
       <div class="p-main">
         <div class="p-hero">

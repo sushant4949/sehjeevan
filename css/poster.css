@@ -193,8 +193,6 @@
 .p-grain { position: absolute; inset: 0; background: url('../assets/img/grain.png'); opacity: .35; pointer-events: none; }
 .p-leaves { position: absolute; top: -30px; right: -70px; width: 500px; height: 500px; color: var(--leaf); opacity: .09; pointer-events: none; }
 .p-leaves.low { top: auto; right: auto; bottom: 260px; left: -150px; width: 360px; height: 360px; transform: rotate(160deg); opacity: .06; }
-.ed-poetry .p-leaves { display: none; }
-.p-quill { position: absolute; right: -20px; top: 170px; width: 340px; opacity: .1; pointer-events: none; transform: rotate(8deg); }
 .p-dots { position: absolute; right: 60px; top: 330px; width: 140px; height: 140px; opacity: .22; pointer-events: none;
   background-image: radial-gradient(circle, #e8913a 4px, transparent 5px); background-size: 28px 28px; }
 
