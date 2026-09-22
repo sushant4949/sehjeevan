@@ -312,8 +312,8 @@
             <input class="hi-input" data-hi type="text" lang="hi" value="${esc(hiName)}" placeholder="Hindi name" aria-label="Hindi name for ${esc(p.name)}">
           </div>
           <span class="seg mini" role="group" aria-label="Bio language">
-            <button type="button" data-lang="hi" aria-pressed="${x.lang === 'hi'}" ${p.bios.hi ? '' : 'disabled title="No Hindi bio in the archive"'}>हिं</button>
-            <button type="button" data-lang="en" aria-pressed="${x.lang === 'en'}" ${p.bios.en ? '' : 'disabled title="No English bio in the archive"'}>EN</button>
+            <button type="button" data-lang="hi" aria-pressed="${x.lang === 'hi'}" title="Hindi bio${(p.translated || []).includes('hi') ? ' (translated)' : ''}">हिं</button>
+            <button type="button" data-lang="en" aria-pressed="${x.lang === 'en'}" title="English bio${(p.translated || []).includes('en') ? ' (translated)' : ''}">EN</button>
           </span>
           <span class="tools">
             <button class="icon-btn ${editing === i ? 'on' : ''}" type="button" data-act="edit" aria-label="Edit bio" title="Edit bio">${ICON.edit}</button>

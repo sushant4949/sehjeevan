@@ -109,6 +109,7 @@
           <div class="tags">${tags(p)}</div>
           ${langs.length > 1 ? `<div class="lang-toggle" role="group" aria-label="Bio language">${langs.map((l) => `<button type="button" data-lang="${l}" aria-pressed="${l === lang}">${l === 'hi' ? 'हिंदी' : 'English'}</button>`).join('')}</div>` : ''}
           <div class="bio" lang="${lang}">${bio(p, lang).map((t) => `<p>${esc(t)}</p>`).join('')}</div>
+          ${(p.translated || []).includes(lang) ? `<p class="translated">Translated from ${lang === 'en' ? 'Hindi' : 'English'} by Sehjeevan.</p>` : ''}
           <h5>Appeared in</h5>
           <ul class="appear">${sessions.map((s) => `<li><b>${fmtDate(s.date)}</b><span>${esc(sessionTitle(s))}${s.theme && s.series !== 'poetry' ? ` · ${esc(s.theme)}` : ''}</span></li>`).join('')}</ul>
           <div class="profile-actions">

@@ -18,7 +18,7 @@
   --display: 'Inter', 'Anek Devanagari', system-ui, sans-serif;
   --caps: 'League Spartan', 'Anek Devanagari', system-ui, sans-serif; /* only for all-caps text */
   --sans: 'Inter', 'Anek Devanagari', system-ui, sans-serif;
-  --text: 'Anek Devanagari', 'Inter', system-ui, sans-serif;
+  --text: 'Inter', 'Anek Devanagari', system-ui, sans-serif; /* Hindi glyphs fall back to Anek */
 }
 
 * { box-sizing: border-box; }

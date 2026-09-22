@@ -129,6 +129,7 @@
 .lang-toggle { display: inline-flex; background: var(--paper); border-radius: 999px; padding: 3px; margin-bottom: .6rem; }
 .lang-toggle button { border: 0; background: none; border-radius: 999px; padding: .35em 1em; cursor: pointer; font-weight: 600; font-size: .9rem; }
 .lang-toggle button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.profile-main .translated { font-size: .85rem; color: var(--muted); font-style: italic; margin: -.3rem 0 0; }
 .profile-main .bio p { font-size: 1.06rem; line-height: 1.7; margin: 0 0 .9rem; color: #3b342e; }
 .profile-main h5 { font-family: var(--sans); text-transform: uppercase; letter-spacing: .1em; font-size: .75rem; color: var(--muted); margin: 1.4rem 0 .5rem; }
 .profile-main ul.appear { list-style: none; padding: 0; margin: 0; display: grid; gap: .35rem; font-size: .95rem; }
