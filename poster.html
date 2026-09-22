@@ -25,19 +25,18 @@
   <div class="studio-grid">
     <section class="panel" aria-label="Poster builder">
       <ol class="stepper" id="stepper">
-        <li><button type="button" data-step="0"><span class="dot">1</span><span class="lbl">Edition</span></button></li>
-        <li><button type="button" data-step="1"><span class="dot">2</span><span class="lbl">When &amp; where</span></button></li>
-        <li><button type="button" data-step="2"><span class="dot">3</span><span class="lbl">Storytellers</span></button></li>
-        <li><button type="button" data-step="3"><span class="dot">4</span><span class="lbl">Finish</span></button></li>
+        <li><button type="button" data-step="0"><span class="dot">01</span><span class="lbl">Edition</span></button></li>
+        <li><button type="button" data-step="1"><span class="dot">02</span><span class="lbl">When &amp; where</span></button></li>
+        <li><button type="button" data-step="2"><span class="dot">03</span><span class="lbl">Storytellers</span></button></li>
+        <li><button type="button" data-step="3"><span class="dot">04</span><span class="lbl">Finish</span></button></li>
       </ol>
 
       <div class="steps">
         <!-- 1 · Edition -->
         <section class="step" data-step="0">
           <header class="step-head">
-            <p class="kicker">Step 1 of 4</p>
             <h1>Which edition is this?</h1>
-            <p>The edition sets the poster’s accents and which language the bios use.</p>
+            <p>Sets the poster’s accent colours and the default bio language.</p>
           </header>
           <div class="editions" id="editions" role="radiogroup" aria-label="Edition"></div>
         </section>
@@ -45,9 +44,8 @@
         <!-- 2 · When & where -->
         <section class="step" data-step="1" hidden>
           <header class="step-head">
-            <p class="kicker">Step 2 of 4</p>
             <h1>When &amp; where?</h1>
-            <p>Pick a date and time. The day of the week fills itself in.</p>
+            <p>The day of the week fills itself in.</p>
           </header>
 
           <div class="group">
@@ -108,9 +106,8 @@
         <!-- 3 · Storytellers -->
         <section class="step" data-step="2" hidden>
           <header class="step-head">
-            <p class="kicker">Step 3 of 4</p>
             <h1>Who’s telling stories?</h1>
-            <p>Two to four storytellers fit best. Reorder them or switch a bio’s language after adding.</p>
+            <p>Two to four fit best. Edit the Hindi name, bio language or order for each.</p>
           </header>
           <ol class="selected" id="selected"></ol>
           <div class="picker">
@@ -128,9 +125,8 @@
         <!-- 4 · Finish -->
         <section class="step" data-step="3" hidden>
           <header class="step-head">
-            <p class="kicker">Step 4 of 4</p>
             <h1>Finishing touches</h1>
-            <p>Adjust the look, then download or print.</p>
+            <p>Adjust the look, then download.</p>
           </header>
 
           <div class="group">
@@ -146,6 +142,14 @@
                   <button type="button" data-bio="none">Names only</button>
                 </div>
               </div>
+              <div class="field"><span>Hindi names</span>
+                <div class="seg" id="hiSeg" role="radiogroup" aria-label="Hindi names">
+                  <button type="button" data-hi="1">Show</button>
+                  <button type="button" data-hi="0">Hide</button>
+                </div>
+              </div>
+            </div>
+            <div class="row2">
               <div class="field"><span>Photos</span>
                 <div class="seg" id="shapeSeg" role="radiogroup" aria-label="Photo shape">
                   <button type="button" data-shape="rounded">Rounded</button>

@@ -30,7 +30,7 @@
     date: nextSunday(), day: '', start: '16:30', end: '18:00', tz: 'IST',
     mode: 'ONLINE', venue: 'Google Meet', reg: 'Free registration',
     hasLink: false, link: '', qr: true, hasSession: false, session: '',
-    t1: TITLES.stories.t1, t2: TITLES.stories.t2, bioLen: 'short', shape: 'rounded',
+    t1: TITLES.stories.t1, t2: TITLES.stories.t2, bioLen: 'short', shape: 'rounded', showHi: true,
     note: '',
     q: 2, scope: 'edition', people: [],
   });
@@ -39,7 +39,7 @@
     const want = edition === 'english' ? 'en' : 'hi';
     return p.bios[want] ? want : Object.keys(p.bios)[0];
   };
-  const entry = (id, edition) => ({ id, lang: langFor(edition, byId[id]), photo: 0, custom: null });
+  const entry = (id, edition) => ({ id, lang: langFor(edition, byId[id]), photo: 0, custom: null, nameHi: null });
 
   // saved draft (v2 only: older drafts had a different shape), then ?ids= from the directory
   const saved = store.get('sj.poster', null);
@@ -111,11 +111,12 @@
       const p = byId[x.id];
       const src = p.photos[x.photo] || p.photos[0];
       const paras = S.bioLen === 'none' && x.custom == null ? [] : bioParas(x);
-      const showHi = p.nameHi && (x.lang === 'hi' || S.edition !== 'english');
+      const hiName = (x.nameHi != null ? x.nameHi : p.nameHi || '').trim();
+      const showHi = S.showHi && hiName;
       return `<article class="p-card">
         <div class="p-ph"><img src="${src}" alt="" style="${photoStyle(src)}"></div>
         <div>
-          <div class="p-name">${esc(p.name)}${showHi ? `<span class="hi">${esc(p.nameHi)}</span>` : ''}</div>
+          <div class="p-name">${esc(p.name)}${showHi ? `<span class="hi">${esc(hiName)}</span>` : ''}</div>
           ${paras.length ? `<div class="p-bio" lang="${x.lang}">${paras.map((t) => `<p>${esc(t)}</p>`).join('')}</div>` : ''}
         </div>
       </article>`;
@@ -282,6 +283,7 @@
     $('#f-hassession').checked = S.hasSession; $('#sessionBox').hidden = !S.hasSession;
     $$('#bioSeg button').forEach((b) => b.setAttribute('aria-checked', b.dataset.bio === S.bioLen));
     $$('#shapeSeg button').forEach((b) => b.setAttribute('aria-checked', b.dataset.shape === S.shape));
+    $$('#hiSeg button').forEach((b) => b.setAttribute('aria-checked', (b.dataset.hi === '1') === S.showHi));
     $$('#qualSeg button').forEach((b) => b.setAttribute('aria-checked', +b.dataset.q === +S.q));
     $$('#scopeSeg button').forEach((b) => b.setAttribute('aria-checked', b.dataset.scope === S.scope));
     const d = dateBits();
@@ -290,31 +292,41 @@
   }
 
   /* ---------- step 3: storytellers ---------- */
+  const ICON = {
+    up: '<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M8 13V3m0 0L3.5 7.5M8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    down: '<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M8 3v10m0 0 4.5-4.5M8 13 3.5 8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    edit: '<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M10.5 2.5l3 3L6 13H3v-3l7.5-7.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+    remove: '<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  };
   function renderSelected() {
     const n = S.people.length;
     $('#selected').innerHTML = S.people.map((x, i) => {
       const p = byId[x.id];
       const src = p.photos[x.photo] || p.photos[0];
-      return `<li class="sel" data-i="${i}">
-        <div class="sel-top">
+      const hiName = x.nameHi != null ? x.nameHi : (p.nameHi || '');
+      return `<li class="sel ${editing === i ? 'open' : ''}" data-i="${i}">
+        <div class="sel-row">
           <span class="ph"><img src="${src}" alt="" style="${photoStyle(src)}"></span>
-          <span class="nm">${esc(p.name)}${p.nameHi ? `<small>${esc(p.nameHi)}</small>` : ''}</span>
+          <div class="sel-names">
+            <span class="nm">${esc(p.name)}</span>
+            <input class="hi-input" data-hi type="text" lang="hi" value="${esc(hiName)}" placeholder="Hindi name" aria-label="Hindi name for ${esc(p.name)}">
+          </div>
+          <span class="seg mini" role="group" aria-label="Bio language">
+            <button type="button" data-lang="hi" aria-pressed="${x.lang === 'hi'}" ${p.bios.hi ? '' : 'disabled title="No Hindi bio in the archive"'}>हिं</button>
+            <button type="button" data-lang="en" aria-pressed="${x.lang === 'en'}" ${p.bios.en ? '' : 'disabled title="No English bio in the archive"'}>EN</button>
+          </span>
           <span class="tools">
-            <button class="icon-btn" type="button" data-act="up" aria-label="Move up" ${i === 0 ? 'disabled' : ''}>↑</button>
-            <button class="icon-btn" type="button" data-act="down" aria-label="Move down" ${i === n - 1 ? 'disabled' : ''}>↓</button>
-            <button class="icon-btn" type="button" data-act="remove" aria-label="Remove ${esc(p.name)}">✕</button>
+            <button class="icon-btn ${editing === i ? 'on' : ''}" type="button" data-act="edit" aria-label="Edit bio" title="Edit bio">${ICON.edit}</button>
+            <button class="icon-btn" type="button" data-act="up" aria-label="Move up" title="Move up" ${i === 0 ? 'disabled' : ''}>${ICON.up}</button>
+            <button class="icon-btn" type="button" data-act="down" aria-label="Move down" title="Move down" ${i === n - 1 ? 'disabled' : ''}>${ICON.down}</button>
+            <button class="icon-btn" type="button" data-act="remove" aria-label="Remove ${esc(p.name)}" title="Remove">${ICON.remove}</button>
           </span>
         </div>
-        <div class="sel-opts">
-          <span class="seg" role="group" aria-label="Bio language">
-            <button type="button" data-lang="hi" aria-pressed="${x.lang === 'hi'}" ${p.bios.hi ? '' : 'disabled title="No Hindi bio in the archive"'}>हिंदी</button>
-            <button type="button" data-lang="en" aria-pressed="${x.lang === 'en'}" ${p.bios.en ? '' : 'disabled title="No English bio in the archive"'}>English</button>
-          </span>
-          ${p.photos.length > 1 ? `<span class="seg" role="group" aria-label="Photo">${p.photos.map((_, k) => `<button type="button" data-photo="${k}" aria-pressed="${k === x.photo}">Photo ${k + 1}</button>`).join('')}</span>` : ''}
-          <button class="linkish" type="button" data-act="edit">${editing === i ? 'Done editing' : 'Edit bio'}</button>
-          ${x.custom != null ? '<button class="linkish" type="button" data-act="revert">Restore original</button>' : ''}
-        </div>
-        ${editing === i ? `<textarea data-bio aria-label="Bio for ${esc(p.name)}" lang="${x.lang}">${esc(x.custom != null ? x.custom : bioParas(x).join('\n\n'))}</textarea>` : ''}
+        ${editing === i ? `<div class="sel-edit">
+          ${p.photos.length > 1 ? `<div class="sel-photos"><span>Photo</span>${p.photos.map((ph, k) => `<button type="button" data-photo="${k}" aria-pressed="${k === x.photo}" aria-label="Photo ${k + 1}"><img src="${ph}" alt="" style="${photoStyle(ph)}"></button>`).join('')}</div>` : ''}
+          <textarea data-bio aria-label="Bio for ${esc(p.name)}" lang="${x.lang}">${esc(x.custom != null ? x.custom : bioParas(x).join('\n\n'))}</textarea>
+          ${x.custom != null ? '<button class="linkish" type="button" data-act="revert">Restore original bio</button>' : ''}
+        </div>` : ''}
       </li>`;
     }).join('');
   }
@@ -336,8 +348,10 @@
     update();
   });
   $('#selected').addEventListener('input', (e) => {
-    if (!e.target.matches('[data-bio]')) return;
-    S.people[+e.target.closest('.sel').dataset.i].custom = e.target.value;
+    const x = S.people[+e.target.closest('.sel').dataset.i];
+    if (e.target.matches('[data-hi]')) x.nameHi = e.target.value;
+    else if (e.target.matches('[data-bio]')) x.custom = e.target.value;
+    else return;
     renderPoster();
     save();
   });
@@ -366,6 +380,7 @@
   });
 
   /* ---------- step 4: finish ---------- */
+  $('#hiSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.showHi = b.dataset.hi === '1'; syncControls(); update(false); } });
   $('#bioSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.bioLen = b.dataset.bio; syncControls(); update(); } });
   $('#shapeSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.shape = b.dataset.shape; syncControls(); update(false); } });
   $('#qualSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { S.q = +b.dataset.q; syncControls(); save(); } });

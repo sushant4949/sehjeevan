@@ -4,7 +4,7 @@ window.SEHJEEVAN = {
   {
    "id": "anil-singh",
    "name": "Anil Singh",
-   "nameHi": null,
+   "nameHi": "अनिल सिंह",
    "bios": {
     "hi": [
      "अनिल सिंह बच्चों के लिए कहानियाँ और कविताएँ लिखते हैं। अपनी कहानियों में वे स्थानीय संदर्भों का बख़ूबी इस्तेमाल करते हैं और कहानी को इस ढंग से विकसित करते हैं कि वह सभी के संदर्भों से जुड़ जाती है।",
@@ -36,7 +36,7 @@ window.SEHJEEVAN = {
   {
    "id": "arpna-chandail",
    "name": "Arpna Chandail",
-   "nameHi": null,
+   "nameHi": "अरपना चंदेल",
    "bios": {
     "hi": [
      "अरपना जम्मू के डोडा जिले में रहती हैं। दिल्ली में 10 साल न्यूज चैनलों के साथ काम किया। वर्ष 2013 से 'साहस' नाम से गैर सरकारी संस्था चला रही हैं। इसी समय से गाजियाबाद के इलाके में कूड़ा बीनने वाले बच्चों की शिक्षा के लिये अनौपचारिक स्कूल का संचालन किया है।",
@@ -86,7 +86,7 @@ window.SEHJEEVAN = {
   {
    "id": "chandan-yadav",
    "name": "Chandan Yadav",
-   "nameHi": null,
+   "nameHi": "चन्दन यादव",
    "bios": {
     "hi": [
      "चन्दन यादव भोपाल में रहते हैं। आप अनूठी रचनात्मकता और बालकेन्द्रित कहानियों के रचनाकारों में शुमार हैं। आपकी लिखी कहानियाँ चकमक, साइकिल और प्लूटो नामक पत्रिकाओं में प्रकाशित होती रही हैं। आपकी कहानियों की किताबें एकलव्य, इकतारा, एन.बी.टी., रूम टू रीड और एल.एल.एफ. से प्रकाशित हैं।.",
@@ -107,7 +107,7 @@ window.SEHJEEVAN = {
   {
    "id": "farah-aziz",
    "name": "Farah Aziz",
-   "nameHi": null,
+   "nameHi": "फरहा अज़ीज़",
    "bios": {
     "hi": [
      "फरहा अज़ीज़ बिहार-झारखंड से ताल्लुक़ रखती हैं। बचपन झारखंड के भवनाथपुर क़स्बे में गुज़रा और नानी-दादी के घर पटना-भागलपुर आना-जाना रहा। स्कूली शिक्षा से आगे की पढ़ाई अलीगढ़ मुस्लिम यूनिवर्सिटी से की।",
@@ -128,7 +128,7 @@ window.SEHJEEVAN = {
   {
    "id": "ganesh-madulkar",
    "name": "Ganesh Madulkar",
-   "nameHi": null,
+   "nameHi": "गणेश मदुलकर",
    "bios": {
     "hi": [
      "गणेश मध्यप्रदेश के हरदा जिले से हैं। रंगमंच से गहरा लगाव। बरकतउल्लाह विश्वविद्यालय, भोपाल से 'गणित' और 'हिन्दी' में मास्टर्स किया है। बाद में नाट्यशास्त्र में पी.जी. डिप्लोमा किया है।",
@@ -149,7 +149,7 @@ window.SEHJEEVAN = {
   {
    "id": "hariyash-rai",
    "name": "Hariyash Rai",
-   "nameHi": null,
+   "nameHi": "हरियश राय",
    "bios": {
     "hi": [
      "हिन्दी कथाकारों की अग्रिम पंक्ति में शामिल हरियश राय पिछले तीन दशकों से कथा–लेखन में सक्रिय हैं। आप अपने समय के जीवन-यथार्थ को गहरे मानवीय सरोकारों के साथ दर्ज करते हैं। सहजता और सादगी आपकी रचनाओं की विशेष पहचान है। गुड़गॉंव में रहते हैं। आपकी प्रकाशित कृतियाँ हैं -",
@@ -173,7 +173,7 @@ window.SEHJEEVAN = {
   {
    "id": "heena-parveen",
    "name": "Heena Parveen",
-   "nameHi": null,
+   "nameHi": "हिना परवीन",
    "bios": {
     "en": [
      "Working with LLF, Heena focuses on creating educational content for foundational classes. Passionate about storytelling, she has a special interest in children’s literature and is drawn to book illustrations. With years in the education sector, she finds education studies engaging and aims to deepen her understanding of children’s literature."
@@ -215,7 +215,7 @@ window.SEHJEEVAN = {
   {
    "id": "husn-tabassum-nihan",
    "name": "Dr. Husn Tabassum Nihan",
-   "nameHi": null,
+   "nameHi": "डॉ. हुस्न तबस्सुम निहाँ",
    "bios": {
     "hi": [
      "डॉ. हुस्न तबस्सुम निहाँ उत्तर प्रदेश के बहराईच जिले की रहने वाली हैं। वर्तमान में मुम्बई में रहती हैं। 'रियल यूटोपिया गार्डन फ़ाउंडेशन' की संस्थापक अध्यक्ष हैं।",
@@ -262,7 +262,7 @@ window.SEHJEEVAN = {
   {
    "id": "laxmi-sharma",
    "name": "Laxmi Sharma",
-   "nameHi": null,
+   "nameHi": "लक्ष्मी शर्मा",
    "bios": {
     "hi": [
      "लक्ष्मी शर्मा उत्तराखंड की रहने वाली हैं, वर्तमान में जयपुर में रह रही हैं। रसायन शास्त्र में मास्टर्स किया है।",
@@ -282,7 +282,7 @@ window.SEHJEEVAN = {
   {
    "id": "lucky-rajeev",
    "name": "Lucky Rajeev",
-   "nameHi": null,
+   "nameHi": "लकी राजीव",
    "bios": {
     "hi": [
      "कानपुर (उत्तर प्रदेश) में जन्मी, पली-बढ़ी हैं। वर्तमान में पुण्ो (महाराष्ट्र) में रह रही हैं। अंग्रेजी साहित्य में मास्टर्स किया है और शास्त्रीय नृत्य (भरतनाट्यम) में प्रशिक्षित हैं। साहित्यिक रूचि बढ़ाने के लिए सोशल मीडिया पर कहानियों को रोचक ढंग से प्रस्तुत करती हैं।",
@@ -326,7 +326,7 @@ window.SEHJEEVAN = {
   {
    "id": "manju-vedula",
    "name": "Manju Vedula",
-   "nameHi": null,
+   "nameHi": "मंजू वेदुला",
    "bios": {
     "hi": [
      "74वर्षीय मंजू हैदराबाद में रहती हैं। व्यवसायिक करियर की शुरुआत मिडिल स्कूल में गणित अध्यापक से की तथा सरलता और धैर्य से पढ़ाने की पहचान बनाई। पारिवारिक ज़िम्मेदारियों के साथ-साथ अपने आस-पास सांस्कृतिक कार्यक्रमों की परिकल्पना, आयोजन और नेतृत्व में सक्रिय भूमिका निभाई।",
@@ -352,7 +352,7 @@ window.SEHJEEVAN = {
   {
    "id": "meenakshi-addepalli",
    "name": "Meenakshi Addepalli",
-   "nameHi": null,
+   "nameHi": "मीनाक्षी अड्डेपल्ली",
    "bios": {
     "en": [
      "Resides in Bhopal. She is an educator, storyteller, and author. She did a formal storytelling course from Kathalaya International Academy of Storytelling, Bangalore. She has participated in many National and international storytelling festivals. She is bringing the culture of Community Storytelling in Bhopal with her team, \"Anek Chidiyan\"."
@@ -374,7 +374,7 @@ window.SEHJEEVAN = {
   {
    "id": "namita-prakash",
    "name": "Namita ‘Prakash’",
-   "nameHi": null,
+   "nameHi": "नमिता ‘प्रकाश’",
    "bios": {
     "en": [
      "She is from Pune and brings storytelling expertise, three decades of teaching experience as a Hindi teacher. Known for her amazing story choices and beautiful narration. Joining us again is our seasoned storyteller who’s been part of many magical sessions with us."
@@ -393,7 +393,7 @@ window.SEHJEEVAN = {
   {
    "id": "navnit-nirav",
    "name": "Navnit Nirav",
-   "nameHi": null,
+   "nameHi": "नवनीत नीरव",
    "bios": {
     "hi": [
      "बच्चों की दुनिया को कहानियों और शब्दों से सजाते हैं। पिछले डेढ़ दशक से सीखने-सिखाने की नई राहें खोज रहे हैं। नवनीत का मानना है कि हर एक बच्चे की अपनी अनूठी भाषा, कल्पना और कहानी होती है।",
@@ -416,7 +416,7 @@ window.SEHJEEVAN = {
   {
    "id": "neetu-yadav",
    "name": "Neetu Yadav",
-   "nameHi": null,
+   "nameHi": "नीतू यादव",
    "bios": {
     "hi": [
      "नीतू यादव लम्बे अरसे से पूर्व-प्राथमिक व प्राथमिक शिक्षा के क्षेत्र में कार्यरत हैं। उन्होंेने भोपाल स्थित 'मुस्कान' संस्था से अपने व्यवसायिक जीवन की शुरूआत की। वर्तमान में एकलव्य फाउंडेशन के प्रकाशन कार्यक्रम में बतौर 'सहायक सम्पादक' और 'लाइब्रेरी से दोस्ती कोर्स' में प्रशिक्षक के तौर पर काम कर रही हैं।",
@@ -437,7 +437,7 @@ window.SEHJEEVAN = {
   {
    "id": "noopur-mathur",
    "name": "Dr. Noopur Mathur",
-   "nameHi": null,
+   "nameHi": "डॉ. नूपुर माथुर",
    "bios": {
     "hi": [
      "डॉ. नूपुर माथुर पेशे से एक समर्पित दंत चिकित्सक हैं और एक उत्साही कथाकार। दिल्ली में रहती हैं।",
@@ -465,7 +465,7 @@ window.SEHJEEVAN = {
   {
    "id": "noor-zaheer",
    "name": "Noor Zaheer",
-   "nameHi": null,
+   "nameHi": "नूर ज़हीर",
    "bios": {
     "en": [
      "She is a writer, theatre activist, translator and researcher, known for her work in English, Hindi, and Urdu. Her notable books include ‘My God is a Woman’, ‘Silent Dunes’, ‘Mere Hissay ki Raushanaai’, ‘Syaahee ki Ek Boond’ and ‘Denied by Allah’, which explores the impact of archaic Islamic laws on women.",
@@ -486,7 +486,7 @@ window.SEHJEEVAN = {
   {
    "id": "parmod-dixit-malay",
    "name": "Parmod Dixit Malay",
-   "nameHi": null,
+   "nameHi": "प्रमोद दीक्षित ‘मलय’",
    "bios": {
     "en": [
      "He lives in Banda, Uttar Pradesh, and is a headmaster in a primary school. He has published two books, writes for various newspapers and magazines, and has edited many books. His works are broadcasted by Akashvani Kendra from Chhatarpur."
@@ -505,7 +505,7 @@ window.SEHJEEVAN = {
   {
    "id": "parul-sinha",
    "name": "Parul Sinha",
-   "nameHi": null,
+   "nameHi": "पारुल सिन्हा",
    "bios": {
     "en": [
      "She is originally from Bhopal, holds an MBA in HR and has been with the Azim Premji Foundation since 2017. Her storytelling journey began during the pandemic to connect with children, and she now records stories in Hindi and English for all ages, using creative voice modulations to bring each story to life. Passionate about making stories accessible, she believes in the power of storytelling to inspire, uplift, and connect across generations."
@@ -554,7 +554,7 @@ window.SEHJEEVAN = {
   {
    "id": "rajshri-kg-trivedi",
    "name": "Rajshri K.G. Trivedi",
-   "nameHi": null,
+   "nameHi": "राजश्री के.जी. त्रिवेदी",
    "bios": {
     "en": [
      "An accomplished educator from Bhopal, Madhya Pradesh, with BJ, MMCJ, and LLB degrees, she brings her storytelling and writing talent to the stage. She’s crafted plays like ‘Mera Bittu’, ‘21vi Sadi ki Maa’, ‘Chatur Chidiya’, ‘Ram Rachi Rakha’, and adaptations like Swanu from R.K Narayan’s Swami and Friends. Her talent for translating Marathi plays and bringing stories to life makes her sessions unforgettable."
@@ -595,7 +595,7 @@ window.SEHJEEVAN = {
   {
    "id": "shiraz-hussain",
    "name": "Shiraz Hussain",
-   "nameHi": null,
+   "nameHi": "शिराज़ हुसैन",
    "bios": {
     "hi": [
      "शिराज़ हुसैन ने नई दिल्ली स्थित जामिया मिल्लिया इस्लामिया विश्वविद्यालय से पढ़ाई की और काफ़ी वक़्त इसी विश्वविद्यालय में पढ़ाया भी है।",
@@ -618,7 +618,7 @@ window.SEHJEEVAN = {
   {
    "id": "shobha-bajpai",
    "name": "Shobha Bajpai",
-   "nameHi": null,
+   "nameHi": "शोभा बाजपेई",
    "bios": {
     "hi": [
      "शोभा बाजपेई हरदा (मध्य प्रदेश) में रहती हैं। राजकीय शिक्षक के पद से सेवानिवृत्त हैं।",
@@ -662,7 +662,7 @@ window.SEHJEEVAN = {
   {
    "id": "toya-sinha",
    "name": "Toya Sinha",
-   "nameHi": null,
+   "nameHi": "तोया सिन्हा",
    "bios": {
     "hi": [
      "तोया सिन्हा ने दिल्ली विश्वविद्यालय से इतिहास में रिसर्च किया है और कुछ वर्ष विश्वविद्यालय में पढ़ाने का अनुभव रहा है। साहित्य में गहरी रुचि। कहानियाँ पढ़ना बेहद पसंदीदा कार्य। कविता, गज़ल और विभिन्न साहित्यिक विधाओं से लगाव। दूसरों को हँसना-हँसाना अच्छा लगता है। सिनेमा की अपेक्षा live theater की ओर रूझान।",
@@ -684,7 +684,7 @@ window.SEHJEEVAN = {
   {
    "id": "vikas-gautam",
    "name": "Vikas Gautam",
-   "nameHi": null,
+   "nameHi": "विकास गौतम",
    "bios": {
     "en": [
      "He is a political science lecturer at a government school. With a keen interest in educational philosophy, history, culture, and cinema.",
@@ -704,7 +704,7 @@ window.SEHJEEVAN = {
   {
    "id": "yogesh-kumar-pandey",
    "name": "Yogesh Kumar Pandey",
-   "nameHi": null,
+   "nameHi": "योगेश कुमार पाण्डेय",
    "bios": {
     "en": [
      "From Patna, Bihar, he holds an M.A. in Psychology and Public Relations. Currently working in the Delhi Municipal Corporation's Health Department, and is passionate about writing and narrating stories for children. He has also been involved in theater, radio, and TV. He enjoys literature, music, drama, and other art forms."
