@@ -6,10 +6,10 @@
 
   /* ---------- edition themes (mirrors the .ed-* poster classes) ---------- */
   const THEME = {
-    hindi:    { bg: '#173b26', ink: '#f6f0e1', accent: '#f4b942', band: '#c9403a', hi: 'हिंदी संस्करण', desc: 'Bios in Hindi · forest green' },
-    english:  { bg: '#f7f2e8', ink: '#1d3325', accent: '#b7312c', band: '#1d5a34', hi: 'अंग्रेज़ी संस्करण', desc: 'Bios in English · warm ivory' },
-    children: { bg: '#ffefc2', ink: '#2b2a1f', accent: '#e2522f', band: '#2f8a4a', hi: 'बाल संस्करण', desc: 'Playful sunshine yellow' },
-    poetry:   { bg: '#4a1c22', ink: '#fbefe3', accent: '#f2b84b', band: '#f2b84b', hi: 'कविता संवाद', desc: 'Kavita Samvad · deep maroon' },
+    hindi:    { bg: '#173b26', ink: '#f6f0e1', t1: '#f6f0e1', t2: '#f4b942', accent: '#f4b942', band: '#c9403a', hi: 'हिंदी संस्करण', desc: 'Bios in Hindi · forest green' },
+    english:  { bg: '#f7f2e8', ink: '#1d3325', t1: '#9b2a2b', t2: '#3f8f4e', accent: '#b7312c', band: '#1d5a34', hi: 'अंग्रेज़ी संस्करण', desc: 'Bios in English · warm ivory' },
+    children: { bg: '#ffefc2', ink: '#2b2a1f', t1: '#b8322c', t2: '#2f8a4a', accent: '#e2522f', band: '#2f8a4a', hi: 'बाल संस्करण', desc: 'Playful sunshine yellow' },
+    poetry:   { bg: '#4a1c22', ink: '#fbefe3', t1: '#fbefe3', t2: '#f2b84b', accent: '#f2b84b', band: '#f2b84b', hi: 'कविता संवाद', desc: 'Kavita Samvad · deep maroon' },
   };
   const TITLES = {
     stories: { t1: 'The World of', t2: 'Stories' },
@@ -150,6 +150,7 @@
             <div class="p-facts">
               <div class="p-fact"><small>Where</small><b>${esc(whereLine())}</b></div>
               <div class="p-fact"><small>Entry</small><b>${esc(S.reg || 'Free')}</b></div>
+              <div class="p-fact"><small>Contact</small><b class="p-mail">sehjeevans@gmail.com</b></div>
             </div>
             ${S.note.trim() ? `<div class="p-note">${esc(S.note)}</div>` : ''}
             ${S.hasLink && S.link ? `<div class="p-link">${esc(S.link.replace(/^https?:\/\/(www\.)?/, ''))}</div>` : ''}
@@ -218,8 +219,8 @@
     const t = THEME[k];
     const title = k === 'poetry' ? TITLES.poetry : TITLES.stories;
     return `<button type="button" class="ed" role="radio" data-ed="${k}" aria-checked="false">
-      <span class="sw" style="background:${t.bg};color:${t.ink}"><i style="background:${t.band}"></i><i style="background:${t.accent}"></i>
-        <span class="a">${esc(title.t1)}</span><span class="b" style="color:${t.accent}">${esc(title.t2)}</span></span>
+      <span class="sw" style="background:${t.bg};color:${t.t1}"><i style="background:${t.band}"></i><i style="background:${t.accent}"></i>
+        <span class="a">${esc(title.t1)}</span><span class="b" style="color:${t.t2}">${esc(title.t2)}</span></span>
       <span class="tx"><b>${v.label} <span class="hi">${t.hi}</span></b><small>${t.desc}</small></span>
     </button>`;
   }).join('');

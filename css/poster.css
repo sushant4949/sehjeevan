@@ -30,7 +30,7 @@
 @media (prefers-reduced-motion: reduce) { .step { animation: none; } }
 .step-head { margin: 26px 0 22px; }
 .step-head .kicker { font-family: var(--sans); font-weight: 700; font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--green-deep); margin: 0 0 .5rem; }
-.step-head h1 { font-family: var(--display); font-weight: 800; letter-spacing: -.025em; font-size: clamp(2rem, 3vw, 2.7rem); line-height: 1; margin: 0; color: var(--ink); }
+.step-head h1 { font-family: var(--display); font-weight: 800; letter-spacing: -.025em; font-size: clamp(2rem, 3vw, 2.7rem); line-height: 1; margin: 0; color: var(--red); }
 .step-head p { color: var(--muted); margin: .6rem 0 0; font-size: 1.04rem; }
 
 .step-nav { display: flex; justify-content: space-between; gap: 12px; padding: 14px clamp(16px, 3vw, 40px); border-top: 1px solid var(--line); background: var(--card); }
@@ -111,9 +111,9 @@
 }
 .ed:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1.5px var(--ink), 0 10px 24px rgba(0, 0, 0, .08); }
 .ed[aria-checked="true"] { box-shadow: 0 0 0 3px var(--green), 0 12px 28px rgba(63, 143, 78, .2); }
-.ed .sw { position: relative; height: 110px; display: flex; flex-direction: column; justify-content: flex-end; padding: 14px 16px; font-family: var(--display); font-weight: 800; letter-spacing: -.02em; }
-.ed .sw .a { font-size: 1rem; font-weight: 600; opacity: .9; }
-.ed .sw .b { font-size: 2rem; line-height: .95; }
+.ed .sw { position: relative; height: 110px; display: flex; flex-direction: column; justify-content: flex-end; padding: 14px 16px; font-family: var(--display); font-weight: 800; text-transform: uppercase; }
+.ed .sw .a { font-size: 1rem; }
+.ed .sw .b { font-size: 1.9rem; line-height: .95; margin-top: 2px; }
 .ed .sw i { position: absolute; right: 14px; top: 14px; width: 22px; height: 22px; border-radius: 50%; }
 .ed .sw i + i { right: 30px; }
 .ed { display: flex; flex-direction: column; }
@@ -177,14 +177,16 @@
 .poster {
   --bg: #173b26; --ink: #f6f0e1; --muted: rgba(246, 240, 225, .82); --accent: #f4b942; --accent-2: #9fd39a;
   --line: rgba(246, 240, 225, .16); --tile: #f6f0e1; --tile-ink: #173b26; --band: #c9403a; --band-ink: #fff; --ring: #f4b942;
+  --t1: var(--ink); --t2: var(--accent);
   --bio: 19px;
   --head: 'League Spartan', 'Anek Devanagari', sans-serif;
   position: relative; overflow: hidden; width: 1080px; min-height: 1527px; display: flex; flex-direction: column;
   background: var(--bg); color: var(--ink); font-family: 'Anek Devanagari', 'League Spartan', sans-serif;
 }
 .poster * { box-sizing: border-box; }
-.poster.ed-english { --bg: #f7f2e8; --ink: #1d3325; --muted: #4a574d; --accent: #b7312c; --accent-2: #3f8f4e; --line: rgba(29, 51, 37, .14); --tile: #1d5a34; --tile-ink: #fff; --band: #1d5a34; --band-ink: #fff; --ring: #3f8f4e; }
-.poster.ed-children { --bg: #ffefc2; --ink: #2b2a1f; --muted: #57533f; --accent: #e2522f; --accent-2: #2f8a4a; --line: rgba(43, 42, 31, .14); --tile: #2f8a4a; --tile-ink: #fff; --band: #e2522f; --band-ink: #fff; --ring: #2f8a4a; }
+.poster.ed-english { --bg: #f7f2e8; --ink: #1d3325; --muted: #4a574d; --accent: #b7312c; --accent-2: #3f8f4e; --line: rgba(29, 51, 37, .14); --tile: #1d5a34; --tile-ink: #fff; --band: #1d5a34; --band-ink: #fff; --ring: #3f8f4e; --t1: #9b2a2b; --t2: #3f8f4e; }
+.poster.ed-english .p-name .hi, .poster.ed-children .p-name .hi { color: var(--t2); }
+.poster.ed-children { --bg: #ffefc2; --ink: #2b2a1f; --muted: #57533f; --accent: #e2522f; --accent-2: #2f8a4a; --line: rgba(43, 42, 31, .14); --tile: #2f8a4a; --tile-ink: #fff; --band: #e2522f; --band-ink: #fff; --ring: #2f8a4a; --t1: #b8322c; --t2: #2f8a4a; }
 .poster.ed-poetry { --bg: #4a1c22; --ink: #fbefe3; --muted: rgba(251, 239, 227, .82); --accent: #f2b84b; --accent-2: #f2a08f; --line: rgba(251, 239, 227, .16); --tile: #fbefe3; --tile-ink: #4a1c22; --band: #f2b84b; --band-ink: #3a1418; --ring: #f2b84b; }
 
 .p-grain { position: absolute; inset: 0; background: url('../assets/img/grain.png'); opacity: .55; pointer-events: none; }
@@ -201,8 +203,8 @@
 
 .p-hero { display: grid; grid-template-columns: 1fr 250px; gap: 36px; align-items: end; margin-top: 36px; }
 .p-over { font-family: var(--head); font-weight: 600; font-size: 21px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 14px; }
-.p-t1 { font-family: var(--head); font-weight: 600; font-size: 76px; line-height: .95; letter-spacing: -2px; white-space: nowrap; }
-.p-t2 { font-family: var(--head); font-weight: 800; font-size: 178px; line-height: .82; letter-spacing: -7px; color: var(--accent); white-space: nowrap; margin-top: 10px; }
+.p-t1 { font-family: var(--head); font-weight: 800; font-size: 72px; line-height: .95; letter-spacing: -.5px; white-space: nowrap; text-transform: uppercase; color: var(--t1); }
+.p-t2 { font-family: var(--head); font-weight: 800; font-size: 150px; line-height: .82; letter-spacing: -2px; color: var(--t2); white-space: nowrap; margin-top: 12px; text-transform: uppercase; }
 .p-edition { display: inline-flex; align-items: center; gap: 14px; margin-top: 30px; font-family: var(--head); font-weight: 700; font-size: 23px; letter-spacing: .14em; text-transform: uppercase; background: var(--ink); color: var(--bg); border-radius: 999px; padding: 14px 26px 10px; }
 .p-edition .hi { font-family: 'Anek Devanagari', sans-serif; letter-spacing: 0; text-transform: none; font-weight: 600; font-size: 23px; opacity: .85; margin-top: -3px; }
 .p-edition .hi::before { content: '·'; margin-right: 14px; opacity: .6; }
@@ -225,7 +227,7 @@
 .ed-children .p-card:nth-child(odd) .p-ph { transform: rotate(-3deg); }
 .ed-children .p-card:nth-child(even) .p-ph { transform: rotate(3deg); --ring: #e2522f; }
 .ed-children .p-card:nth-child(3n) .p-ph { --ring: #f2a91c; }
-.p-name { font-family: var(--head); font-weight: 700; font-size: 44px; line-height: 1; letter-spacing: -1px; }
+.p-name { font-family: var(--head); font-weight: 700; font-size: 44px; line-height: 1; letter-spacing: -1px; color: var(--t1); }
 .p-name .hi { display: inline-block; font-family: 'Anek Devanagari', sans-serif; font-weight: 600; font-size: 27px; letter-spacing: 0; color: var(--accent); margin-left: 14px; }
 .p-bio { margin-top: 12px; font-size: var(--bio); line-height: 1.55; color: var(--muted); }
 .p-bio p { margin: 0 0 .6em; }
@@ -247,3 +249,4 @@
 .p-qr svg { width: 100%; height: 100%; display: block; }
 .p-qr small { display: block; font-family: var(--head); font-weight: 700; font-size: 15px; letter-spacing: .18em; text-transform: uppercase; margin-top: 10px; }
 .p-sign { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; padding-top: 16px; border-top: 1.5px solid color-mix(in srgb, currentColor 28%, transparent); font-family: var(--head); font-weight: 600; font-size: 16px; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.p-fact b.p-mail { font-size: 26px; }
